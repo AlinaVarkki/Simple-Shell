@@ -5,6 +5,7 @@
  *  stringLength - getting the len of the string
  */
 
+#include <stdlib.h>
 
 #define TOKENIZERS " |><&;\t"
 

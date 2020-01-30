@@ -13,7 +13,9 @@ int main() {
     char *input;
     while (strcmp(input, "exit")) {
         printf("$> ");
-        fgets(input, 512, stdin);
+        char* checkInput = fgets(input, 512, stdin);
+        if (checkInput == NULL)
+            break;
         trimString(input);
         parsingTheLine(input);
     }
