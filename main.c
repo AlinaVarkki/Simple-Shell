@@ -1,6 +1,7 @@
-/** This is the main part of our C shell program
-* group 11
-*/
+/**
+ * This is the main part of our C shell program
+ * group 11
+ */
 
 #include <stdio.h>
 #include <string.h>
@@ -14,8 +15,10 @@ int main() {
     while (strcmp(input, "exit")) {
         printf("$> ");
         char* checkInput = fgets(input, 512, stdin);
-        if (checkInput == NULL)
+        if (checkInput == NULL) {
+            printf("\n");
             break;
+        }
         trimString(input);
         parsingTheLine(input);
     }

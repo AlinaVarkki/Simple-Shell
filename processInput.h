@@ -49,12 +49,10 @@ int parsingTheLine(char* input) {
         tokens[i] = token;
     }
 
-    printf("List of the tokens: ");
-    printf("%s", tokens[0]);
-    for (int j = 1; j < i; j++) {
-        printf(", %s", tokens[j]);
+    for (int j = 0; j < i; j++) {
+        printf("\"%s\"\n", tokens[j]);
     }
-    printf("\n");
+
     return 1;
 }
 
