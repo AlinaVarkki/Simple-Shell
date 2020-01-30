@@ -6,6 +6,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+#define TOKENIZERS " |><&;\t"
+
 int welcomeMessage();
 int parsingTheLine(char*);
 char* trimString(char*);
@@ -19,7 +21,7 @@ int main() {
         fgets(input, 512, stdin);
         input = trimString(input);
         parsingTheLine(input);
-        printf("%s\n", input);
+     //   printf("%s\n", input);
     }
 
     return 1;
@@ -31,29 +33,44 @@ int welcomeMessage() {
     return 1;
 }
 
+/**
+ * breaking up the input
+ * @param line to be split up
+ * @return nothing so far (maybe write some check to see if was success?); or maybe it should return a pointer to that array?
+ */
+
 int parsingTheLine(char* line) {
-    printf("you got here! the line that is about to be tokenised is: %s\n", line);
     char** tokens = malloc(512);
     int i = 0;
-    char* token;
-    tokens[i] = strtok(line, " ");
+    char* token = strtok(line, TOKENIZERS);
+    tokens[i] = token;
 
-    while(line != NULL) {
-        printf("do i get here?\n");
-
+    while(token != NULL) {
+        token = strtok(NULL, TOKENIZERS);
         i++;
-        token = strtok(NULL, " ");
         tokens[i] = token;
+
     }
-    printf("%s", tokens[0]); // also figure out this??
+
+    printf("List of the tokens: ");
+    printf("%s", tokens[0]);
+    for (int j = 1; j < i; j++) {
+        printf(", %s", tokens[j]);
+    }
+    printf("\n");
     return 1;
 }
 
+
+/**
+ * gets rid of the 0s/empty spaces that follow the string
+ * @param line/input to be trimmed
+ * @return trimmed line
+ */
+
 char* trimString(char* line) {
-    // int index = -1;
     int i = 0;
     while (line[i] != '\0') {
-        //  printf("good job, you're on the char n: %d\n",i);
         i++;
     }
     line[i-1] = '\0';
