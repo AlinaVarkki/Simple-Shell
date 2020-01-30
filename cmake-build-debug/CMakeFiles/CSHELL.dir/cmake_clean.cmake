@@ -1,9 +1,7 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/CSHELL.dir/main.c.obj"
-  "CSHELL.exe"
-  "CSHELL.exe.manifest"
+  "CMakeFiles/CSHELL.dir/main.c.o"
+  "CSHELL"
   "CSHELL.pdb"
-  "libCSHELL.dll.a"
 )
 
 # Per-language clean rules from dependency scanning.

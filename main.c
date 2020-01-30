@@ -4,10 +4,11 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 int welcomeMessage();
 int parsingTheLine(char*);
-
+char* trimString(char*);
 
 int main() {
     welcomeMessage();
@@ -15,7 +16,8 @@ int main() {
 
     while (strcmp(input, "exit")) {
         printf("$ ");
-        scanf("%s", input); //fix thsi - can't use scan f
+        fgets(input, 512, stdin);
+        input = trimString(input);
         parsingTheLine(input);
         printf("%s\n", input);
     }
@@ -31,15 +33,29 @@ int welcomeMessage() {
 
 int parsingTheLine(char* line) {
     printf("you got here! the line that is about to be tokenised is: %s\n", line);
-    char* tokens[512];
+    char** tokens = malloc(512);
     int i = 0;
-    tokens[i] = strtok(line, " |><&;");
+    char* token;
+    tokens[i] = strtok(line, " ");
 
     while(line != NULL) {
+        printf("do i get here?\n");
+
         i++;
-        tokens[i] = strtok(NULL, " |><&;");
+        token = strtok(NULL, " ");
+        tokens[i] = token;
     }
     printf("%s", tokens[0]); // also figure out this??
     return 1;
 }
 
+char* trimString(char* line) {
+    // int index = -1;
+    int i = 0;
+    while (line[i] != '\0') {
+        //  printf("good job, you're on the char n: %d\n",i);
+        i++;
+    }
+    line[i-1] = '\0';
+    return line;
+}
