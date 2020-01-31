@@ -10,8 +10,8 @@
 
 int main() {
     welcomeMessage();
+    char input[0];
 
-    char *input;
     while (strcmp(input, "exit")) {
         printf("$> ");
         char* checkInput = fgets(input, 512, stdin);
