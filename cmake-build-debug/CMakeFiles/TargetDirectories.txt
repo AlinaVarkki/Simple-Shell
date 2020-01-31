@@ -1,3 +1,0 @@
-/Users/slavka/CLionProjects/c-shell/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/Users/slavka/CLionProjects/c-shell/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/slavka/CLionProjects/c-shell/cmake-build-debug/CMakeFiles/CSHELL.dir
