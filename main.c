@@ -10,7 +10,7 @@
 
 int main() {
     welcomeMessage();
-    char input[0];
+    char input[512];
 
     while (strcmp(input, "exit")) {
         printf("$> ");
