@@ -16,7 +16,7 @@ int main() {
     while (strcmp(input, "exit")) {
         printf("$> ");
         char* checkInput = fgets(input, 512, stdin);
-        if (checkInput == NULL) {
+        if (strlen(checkInput) == 1) {
             printf("\n");
             break;
         }
