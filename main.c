@@ -11,7 +11,7 @@
 int main() {
     welcomeMessage();
 
-    char *input;
+    char input[512];
     while (strcmp(input, "exit")) {
         printf("$> ");
         char* checkInput = fgets(input, 512, stdin);
