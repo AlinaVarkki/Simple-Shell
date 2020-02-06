@@ -6,8 +6,13 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <sys/types.h>
+#include <unistd.h>
+
 
 #include "processInput.h"
+
+int forkIt(char** tokens);
 
 int main() {
     welcomeMessage();
@@ -21,8 +26,32 @@ int main() {
             exit(1);
         }
         trimString(input);
-        parsingTheLine(input);
+        char** tokens;
+        tokens = parsingTheLine(input);
+        forkIt(tokens);
     }
 
     return 1;
+}
+
+int forkIt (char** tokens) {
+    pid_t process_id;
+    int status;
+
+    process_id = fork();
+    if (process_id == -1) {
+        printf("fork() failed\n");
+        return 1;
+    }
+    if (process_id == 0) {
+        execvp("", tokens);
+        perror(tokens[0]);
+        printf("Here 1\n");
+        return 0;
+    }
+    else {
+        printf ("Here 2\n");
+        wait(NULL);
+        return 0;
+    }
 }

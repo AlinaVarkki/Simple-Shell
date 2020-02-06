@@ -11,7 +11,7 @@
 
 
 int welcomeMessage();
-int parsingTheLine(char*);
+char** parsingTheLine(char*);
 char* trimString(char*);
 int stringLength(const char*);
 
@@ -30,9 +30,9 @@ int welcomeMessage() {
  * @return nothing so far (maybe write some check to see if was success?); or maybe it should return a pointer to that array?
  */
 
-int parsingTheLine(char* input) {
+char** parsingTheLine(char* input) {
     if (!strcmp(input, "exit"))
-        return 0;
+        exit(0);
 
     int len = stringLength(input);
     char line[len];
@@ -53,7 +53,7 @@ int parsingTheLine(char* input) {
         printf("\"%s\"\n", tokens[j]);
     }
 
-    return 1;
+    return tokens;
 }
 
 
