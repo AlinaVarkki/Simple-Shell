@@ -18,7 +18,7 @@ int main() {
         char* checkInput = fgets(input, 512, stdin);
         if (checkInput == NULL) {
             printf("\n");
-            break;
+            exit(1);
         }
         trimString(input);
         parsingTheLine(input);
