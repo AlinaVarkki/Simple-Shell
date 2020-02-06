@@ -8,6 +8,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <sys/wait.h>
 
 
 #include "processInput.h"
@@ -21,6 +22,12 @@ int main() {
     while (strcmp(input, "exit")) {
         printf("$> ");
         char* checkInput = fgets(input, 512, stdin);
+        // Picking up empty command
+
+        if(strlen(checkInput) == 1){
+            continue;
+        }
+
         if (checkInput == NULL) {
             printf("\n");
             exit(1);
@@ -28,7 +35,9 @@ int main() {
         trimString(input);
         char** tokens;
         tokens = parsingTheLine(input);
-        forkIt(tokens);
+        if(forkIt(tokens) == 0){
+            break;
+        }
     }
 
     return 1;
@@ -41,7 +50,7 @@ int forkIt (char** tokens) {
     process_id = fork();
     if (process_id == -1) {
         printf("fork() failed\n");
-        return 1;
+        return -1;
     }
     if (process_id == 0) {
         execvp("", tokens);
@@ -52,6 +61,6 @@ int forkIt (char** tokens) {
     else {
         printf ("Here 2\n");
         wait(NULL);
-        return 0;
+        return 1;
     }
 }
