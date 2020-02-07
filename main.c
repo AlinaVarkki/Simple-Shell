@@ -24,14 +24,16 @@ int main() {
         char* checkInput = fgets(input, 512, stdin);
         // Picking up empty command
 
-        if(strlen(checkInput) == 1){
-            continue;
-        }
-
         if (checkInput == NULL) {
             printf("\n");
             exit(1);
         }
+
+        if(strlen(checkInput) == 1){
+            continue;
+        }
+
+
         trimString(input);
         char** tokens;
         tokens = parsingTheLine(input);
