@@ -12,40 +12,49 @@
 
 
 #include "processInput.h"
-
-int forkIt(char** tokens);
+char** tokens;
+int forkIt();
 
 int main() {
     welcomeMessage();
     char input[512];
+//    fgets(input, 512, stdin);
+    printf("$> ");
 
-    while (strcmp(input, "exit")) {
-        printf("$> ");
-        char* checkInput = fgets(input, 512, stdin);
-        // Picking up empty command
-
-        if (checkInput == NULL) {
-            printf("\n");
-            exit(1);
-        }
-
-        if(strlen(checkInput) == 1){
+    while (    fgets(input, 512, stdin)!=NULL){
+//    while (strcmp(input, "exit")) {
+        if(strlen(input) == 1){
+            printf("$> ");
             continue;
         }
 
 
-        trimString(input);
-        char** tokens;
         tokens = parsingTheLine(input);
-        if(forkIt(tokens) == 0){
+
+        if(strcmp(tokens[0],"exit")==0)
+            break;
+//        if (input == NULL) {
+//            printf("\n");
+//            exit(1);
+//        }
+
+
+
+//        trimString(input);
+
+//        tokens = parsingTheLine(input);
+        if(forkIt() == 0){
             break;
         }
+        printf("$> ");
+
+        // Picking up empty command
     }
 
     return 1;
 }
 
-int forkIt (char** tokens) {
+int forkIt () {
     pid_t process_id;
     int status;
 
@@ -55,7 +64,8 @@ int forkIt (char** tokens) {
         return -1;
     }
     if (process_id == 0) {
-        execvp("", tokens);
+        printf("%s\n",tokens[0]);
+        execvp(tokens[0], tokens);
         perror(tokens[0]);
         printf("Here 1\n");
         return 0;

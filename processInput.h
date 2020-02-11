@@ -7,7 +7,7 @@
 
 #include <stdlib.h>
 
-#define TOKENIZERS " |><&;\t"
+#define TOKENIZERS " |><&;\t\n"
 
 
 int welcomeMessage();
@@ -31,22 +31,23 @@ int welcomeMessage() {
  */
 
 char** parsingTheLine(char* input) {
-    if (!strcmp(input, "exit"))
-        exit(0);
+//    if (!strcmp(input, "exit"))
+//        exit(0);
 
-    int len = stringLength(input);
-    char line[len];
-    strcpy(line, input);
+//    int len = stringLength(input);
+//    len = strlen(input);
+//    char line[len];
+//    strcpy(line, input);
 
     char** tokens = malloc(512);
     int i = 0;
-    char* token = strtok(line, TOKENIZERS);
-    tokens[i] = token;
+    char* token = strtok(input, TOKENIZERS);
+//    tokens[i] = token;
 
     while(token != NULL) {
-        token = strtok(NULL, TOKENIZERS);
-        i++;
         tokens[i] = token;
+        i++;
+        token = strtok(NULL, TOKENIZERS);
     }
 
     for (int j = 0; j < i; j++) {
