@@ -3,6 +3,7 @@
  *  parsingTheLine - tokenization
  *  trimString - getting rid of trailing zeroes
  *  stringLength - getting the len of the string
+ *  and some random stuff
  */
 
 #include <stdlib.h>

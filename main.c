@@ -1,7 +1,7 @@
 /**
  * This is the main part of our C shell program
  * group 11
- *
+ * yayy
  */
 
 #include <stdio.h>
@@ -23,6 +23,5 @@ int main() {
         trimString(input);
         parsingTheLine(input);
     }
-
     return 1;
 }
