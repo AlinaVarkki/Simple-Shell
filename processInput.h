@@ -34,8 +34,9 @@ char** parsingTheLine(char* input) {
 
     char** tokens = malloc(512);
     int i = 0;
-    char* token = strtok(input, TOKENIZERS);
+    char* token = strtok(input, TOKENIZERS); //puts first token into token
 
+    // Adds individual tokens into token array
     while(token != NULL) {
         tokens[i] = token;
         i++;

@@ -17,11 +17,11 @@ int forkIt();
 
 int main() {
     welcomeMessage();
-    char input[512];
+    char input[512]; //Allocates 512 bytes of null 0. Acts as eof
     printf("$> ");
 
     while (fgets(input, 512, stdin) != NULL){
-
+        //Windows contingency
         if(strlen(input) == 1){
             printf("$> ");
             continue;
@@ -29,36 +29,37 @@ int main() {
 
         tokens = parsingTheLine(input);
 
-        if(strcmp(tokens[0],"exit")==0)
+        // if first token is "exit" then
+        if(strcmp(tokens[0],"exit")==0 && tokens[1]==NULL)
             break;
 
-        if(forkIt() == 0){
-            break;
-        }
+        forkIt();
 
         printf("$> ");
     }
 
-    printf("\n");
     return 1;
 }
 
 int forkIt () {
-    pid_t process_id;
+    pid_t process_id, pid; //Creates process id
     int status;
 
-    process_id = fork();
-    if (process_id == -1) {
+    process_id = fork(); //Create the fork
+    if (process_id == -1) {         //if fork failed
         printf("fork() failed\n");
         return -1;
     }
-    if (process_id == 0) {
-        execvp(tokens[0], tokens);
-        perror("Error");
-        return 0;
+    if (process_id == 0) {      //if child executes
+        execvp(tokens[0], tokens);  //executes child process
+        perror(tokens[0]);      //prints error from child if one exists
+        exit(0);           // returns exit status
     }
     else {
-        wait(NULL);
-        return 1;
+        pid = wait(&status);        //parent waits for change in status
+        if(WIFEXITED(status)){      //separates prompt from error messages
+            printf("\n");
+        }
     }
+    return 0;
 }
