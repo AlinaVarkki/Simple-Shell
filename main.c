@@ -18,39 +18,28 @@ int forkIt();
 int main() {
     welcomeMessage();
     char input[512];
-//    fgets(input, 512, stdin);
     printf("$> ");
 
-    while (    fgets(input, 512, stdin)!=NULL){
-//    while (strcmp(input, "exit")) {
+    while (fgets(input, 512, stdin) != NULL){
+
         if(strlen(input) == 1){
             printf("$> ");
             continue;
         }
 
-
         tokens = parsingTheLine(input);
 
         if(strcmp(tokens[0],"exit")==0)
             break;
-//        if (input == NULL) {
-//            printf("\n");
-//            exit(1);
-//        }
 
-
-
-//        trimString(input);
-
-//        tokens = parsingTheLine(input);
         if(forkIt() == 0){
             break;
         }
-        printf("$> ");
 
-        // Picking up empty command
+        printf("$> ");
     }
 
+    printf("\n");
     return 1;
 }
 
@@ -64,14 +53,11 @@ int forkIt () {
         return -1;
     }
     if (process_id == 0) {
-        printf("%s\n",tokens[0]);
         execvp(tokens[0], tokens);
-        perror(tokens[0]);
-        printf("Here 1\n");
+        perror("Error");
         return 0;
     }
     else {
-        printf ("Here 2\n");
         wait(NULL);
         return 1;
     }
