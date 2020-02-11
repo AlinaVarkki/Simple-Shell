@@ -15,14 +15,7 @@ char** parsingTheLine(char*);
 char* trimString(char*);
 int stringLength(const char*);
 
-/**
- * just a welcome message that shows up on the top of the shell
- * @return
- */
-int welcomeMessage() {
-    printf("Welcome to our Simple Shell!\n");
-    return 1;
-}
+
 
 /**
  * breaking up the input

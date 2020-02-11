@@ -14,9 +14,23 @@
 #include "processInput.h"
 char** tokens;
 int forkIt();
+char path[500];
+char directory[500];
 
 int main() {
-    welcomeMessage();
+
+    //saving the current path to restore it later
+    strcpy(path, getenv("PATH"));
+    //setting current directory to home
+    strcpy(directory, getenv("HOME"));
+    chdir(directory);
+
+    //saying what was the initial directory and what we changed it for
+    printf("Initial path is %s \n", path);
+    printf("The directory is %s \n", directory);
+
+    printf("Welcome to our Simple Shell!\n");
+
     char input[512]; //Allocates 512 bytes of null 0. Acts as eof
     printf("$> ");
 
@@ -37,6 +51,10 @@ int main() {
 
         printf("$> ");
     }
+
+    //set the environment back to the original one
+    setenv("PATH", path,1);
+    printf("Path is restored to %s \n", path);
 
     return 1;
 }
