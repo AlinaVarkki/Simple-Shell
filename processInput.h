@@ -6,7 +6,7 @@
  */
 
 #include <stdlib.h>
-
+#include <unistd.h>
 #define TOKENIZERS " |><&;\t\n"
 
 
@@ -14,6 +14,7 @@ int welcomeMessage();
 char** parsingTheLine(char*);
 char* trimString(char*);
 int stringLength(const char*);
+int changeDirectory(char*);
 
 
 
@@ -62,4 +63,9 @@ int stringLength(const char* line) {
         i++;
     }
     return i;
+}
+
+int changeDirectory(char* nDirectory){
+    return chdir(nDirectory);
+
 }

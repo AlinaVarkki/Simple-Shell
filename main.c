@@ -44,10 +44,22 @@ int main() {
         tokens = parsingTheLine(input);
 
         // if first token is "exit" then
-        if(strcmp(tokens[0],"exit")==0 && tokens[1]==NULL)
+        if(strcmp(tokens[0],"exit")==0 && tokens[1]==NULL) {
             break;
+        }
+        else if (strcmp(tokens[0],"cd")== 0){
+            //printf("Test: %d\n",sizeof(tokens));
+            //printf("%d\n",changeDirectory(tokens[1], directory));
+            if(tokens[1] == NULL){
+                printf("%d\n",changeDirectory(directory));
+            }
+            else{
+                printf("%d\n",changeDirectory(tokens[1]));
+            }
+        }
+        else
+            forkIt();
 
-        forkIt();
 
         printf("$> ");
     }
