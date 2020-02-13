@@ -14,8 +14,8 @@ int welcomeMessage();
 char** parsingTheLine(char*);
 char* trimString(char*);
 int stringLength(const char*);
-
-
+void setPath(char* directory);
+void getPath();
 
 /**
  * breaking up the input
@@ -35,6 +35,7 @@ char** parsingTheLine(char* input) {
         i++;
         token = strtok(NULL, TOKENIZERS);
     }
+    tokens[i]=NULL;
 
     return tokens;
 }
@@ -62,4 +63,21 @@ int stringLength(const char* line) {
         i++;
     }
     return i;
+}
+
+/**
+ * mehod prints the current path
+ */
+void getPath(){
+        printf(getenv("PATH"));}
+
+
+/**
+ * mehod sets the current path
+ */
+void setPath(char* directory){
+
+    setenv("PATH",directory,1);
+//        printf(chdir(directory));
+
 }

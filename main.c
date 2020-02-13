@@ -16,6 +16,7 @@ char** tokens;
 int forkIt();
 char path[500];
 char directory[500];
+char cwd[1000];
 
 int main() {
 
@@ -24,10 +25,13 @@ int main() {
     //setting current directory to home
     strcpy(directory, getenv("HOME"));
     chdir(directory);
+    void getPath();
+
 
     //saying what was the initial directory and what we changed it for
     printf("Initial path is %s \n", path);
-    printf("The directory is %s \n", directory);
+    getcwd(cwd, sizeof(cwd)); // using this to get the current directory(to make sure that it is home)
+    printf("The directory is %s \n", cwd);
 
     printf("Welcome to our Simple Shell!\n");
 
@@ -43,9 +47,28 @@ int main() {
 
         tokens = parsingTheLine(input);
 
+
         // if first token is "exit" then
         if(strcmp(tokens[0],"exit")==0 && tokens[1]==NULL)
             break;
+
+        if(strcmp(tokens[0],"getpath")==0 && tokens[1]==NULL) {
+            getPath();
+            continue;
+        }
+        else{
+            printf("Error: Invalid invalid amount of arguments ");
+        }
+
+        if(strcmp(tokens[0],"setpath")==0 && tokens[1]!=NULL && tokens[2]==NULL) {
+            setPath(tokens[1]);
+        }
+        else{
+            printf("Error: Invalid invalid amount of arguments");
+        }
+
+//        if(strcmp(tokens[0],"setpath")==0 && tokens[1]==NULL)
+//            setPath();
 
         forkIt();
 
