@@ -10,11 +10,8 @@
 #define TOKENIZERS " |><&;\t\n"
 
 
-int welcomeMessage();
 char** parsingTheLine(char*);
-char* trimString(char*);
-int stringLength(const char*);
-int changeDirectory(char*);
+void changeDirectory(char*);
 
 
 
@@ -41,31 +38,9 @@ char** parsingTheLine(char* input) {
 }
 
 
-/**
- * gets rid of the 0s/empty spaces that follow the string
- * @param line/input to be trimmed
- * @return trimmed line
- */
 
-char* trimString(char* line) {
-    int len = stringLength(line);
-    line[len-1] = '\0';
-    return line;
-}
-
-/**
- * @param line
- * @return length of the line
- */
-int stringLength(const char* line) {
-    int i = 0;
-    while (line[i] != '\0') {
-        i++;
-    }
-    return i;
-}
-
-int changeDirectory(char* nDirectory){
-    return chdir(nDirectory);
-
+void changeDirectory(char* nDirectory){
+    int test = chdir(nDirectory);
+    if (test ==-1)
+        perror(nDirectory);
 }
