@@ -18,6 +18,13 @@ char path[500];
 char directory[500];
 char cwd[1000];
 
+//list of our command to (hopefully) see if command entered is in the list
+char *commands[] = {
+        "exit",
+        "setpath",
+        "getpath"
+};
+
 int main() {
 
     //saving the current path to restore it later
@@ -26,6 +33,7 @@ int main() {
     strcpy(directory, getenv("HOME"));
     chdir(directory);
     void getPath();
+    int returncommandIndex(char* command);
 
 
     //saying what was the initial directory and what we changed it for
@@ -41,37 +49,38 @@ int main() {
     while (fgets(input, 512, stdin) != NULL){
         //Windows contingency
         if(strlen(input) == 1){
+
             printf("$> ");
             continue;
         }
 
         tokens = parsingTheLine(input);
 
+        //if the method entered is not in the list of commands, execute else and forkit
+        if(returncommandIndex(tokens[0]) > -1) {
+            // if first token is "exit" then
+            if (strcmp(tokens[0], "exit") == 0 && tokens[1] == NULL)
+                break;
 
-        // if first token is "exit" then
-        if(strcmp(tokens[0],"exit")==0 && tokens[1]==NULL)
-            break;
+            //get current path
+            if (strcmp(tokens[0], "getpath") == 0 && tokens[1] == NULL) {
+                getPath();
+                continue;
+            } else {
+                printf("Error: Invalid invalid amount of arguments ");
+            }
 
-        if(strcmp(tokens[0],"getpath")==0 && tokens[1]==NULL) {
-            getPath();
-            continue;
+            //set path to whatever is asked
+            if (strcmp(tokens[0], "setpath") == 0 && tokens[1] != NULL && tokens[2] == NULL) {
+                setPath(tokens[1]);
+            } else {
+                printf("Error: Invalid invalid amount of arguments");
+            }
+
         }
-        else{
-            printf("Error: Invalid invalid amount of arguments ");
+        else {
+            forkIt();
         }
-
-        if(strcmp(tokens[0],"setpath")==0 && tokens[1]!=NULL && tokens[2]==NULL) {
-            setPath(tokens[1]);
-        }
-        else{
-            printf("Error: Invalid invalid amount of arguments");
-        }
-
-//        if(strcmp(tokens[0],"setpath")==0 && tokens[1]==NULL)
-//            setPath();
-
-        forkIt();
-
         printf("$> ");
     }
 
@@ -103,4 +112,17 @@ int forkIt () {
         }
     }
     return 0;
+}
+
+//method that checks if the command is in the list of commands and returns negative value if it is not
+int returncommandIndex(char* command){
+    int i = 0;
+    while(command[i] != NULL)
+    {
+        if(strcmp(command, commands[i]) == 0){
+            return i;
+        }
+        i++;
+    }
+    return -1;
 }
