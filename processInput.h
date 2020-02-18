@@ -6,16 +6,18 @@
  */
 
 #include <stdlib.h>
-
+#include <unistd.h>
 #define TOKENIZERS " |><&;\t\n"
 
 
-int welcomeMessage();
 char** parsingTheLine(char*);
 char* trimString(char*);
 int stringLength(const char*);
 void setPath(char* directory);
 void getPath();
+void changeDirectory(char*);
+
+
 
 /**
  * breaking up the input
@@ -40,6 +42,12 @@ char** parsingTheLine(char* input) {
     return tokens;
 }
 
+
+
+void changeDirectory(char* nDirectory){
+    int test = chdir(nDirectory);
+    if (test ==-1)
+        perror(nDirectory);
 /**
  * method prints the current path
  */

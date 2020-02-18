@@ -35,8 +35,6 @@ int main() {
     strcpy(directory, getenv("HOME"));
     chdir(directory);
 
-
-
     //saying what was the initial directory and what we changed it for
     printf("Initial path is %s \n", path);
     getcwd(cwd, sizeof(cwd)); // using this to get the current directory(to make sure that it is home)
@@ -50,7 +48,6 @@ int main() {
     while (fgets(input, 512, stdin) != NULL){
         //Windows contingency
         if(strlen(input) == 1){
-
             printf("$> ");
             continue;
         }
@@ -81,6 +78,24 @@ int main() {
         else {
             forkIt();
         }
+        // if first token is "exit" then
+        if(strcmp(tokens[0],"exit")==0 && tokens[1]==NULL) {
+            break;
+        }
+        else if (strcmp(tokens[0],"cd")== 0){
+            //printf("Test: %d\n",sizeof(tokens));
+            //printf("%d\n",changeDirectory(tokens[1], directory));
+            if(tokens[1] == NULL){
+                changeDirectory(directory);
+            }
+            else{
+                changeDirectory(tokens[1]);
+            }
+        }
+        else
+            forkIt();
+
+
         printf("$> ");
     }
 
