@@ -108,7 +108,7 @@ int forkIt () {
     else {
         pid = wait(&status);        //parent waits for change in status
         if(WIFEXITED(status)){      //separates prompt from error messages
-            printf("\n");
+            printf("");
         }
     }
     return 0;
