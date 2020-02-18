@@ -17,13 +17,13 @@ int forkIt();
 char path[500];
 char directory[500];
 char cwd[1000];
-void getPath();
 int returncommandIndex(char* command);
 
 //list of our command to (hopefully) see if command entered is in the list
 char *commands[] = {
         "exit",
         "setpath",
+        "cd",
         "getpath"
 };
 
@@ -70,6 +70,14 @@ int main() {
             else if (strcmp(tokens[0], "setpath") == 0 && tokens[1] != NULL && tokens[2] == NULL) {
                 setPath(tokens[1]);
             }
+            else if (strcmp(tokens[0],"cd")== 0){
+                if(tokens[1] == NULL){
+                    changeDirectory(directory);
+                }
+                else{
+                    changeDirectory(tokens[1]);
+                }
+            }
             else {
                 printf("Error: Invalid invalid amount of arguments\n");
             }
@@ -78,23 +86,6 @@ int main() {
         else {
             forkIt();
         }
-        // if first token is "exit" then
-        if(strcmp(tokens[0],"exit")==0 && tokens[1]==NULL) {
-            break;
-        }
-        else if (strcmp(tokens[0],"cd")== 0){
-            //printf("Test: %d\n",sizeof(tokens));
-            //printf("%d\n",changeDirectory(tokens[1], directory));
-            if(tokens[1] == NULL){
-                changeDirectory(directory);
-            }
-            else{
-                changeDirectory(tokens[1]);
-            }
-        }
-        else
-            forkIt();
-
 
         printf("$> ");
     }
@@ -123,7 +114,7 @@ int forkIt () {
     else {
         pid = wait(&status);        //parent waits for change in status
         if(WIFEXITED(status)){      //separates prompt from error messages
-            printf("");
+            printf(" ");
         }
     }
     return 0;
