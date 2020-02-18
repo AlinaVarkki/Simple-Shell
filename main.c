@@ -17,6 +17,8 @@ int forkIt();
 char path[500];
 char directory[500];
 char cwd[1000];
+void getPath();
+int returncommandIndex(char* command);
 
 //list of our command to (hopefully) see if command entered is in the list
 char *commands[] = {
@@ -32,8 +34,7 @@ int main() {
     //setting current directory to home
     strcpy(directory, getenv("HOME"));
     chdir(directory);
-    void getPath();
-    int returncommandIndex(char* command);
+
 
 
     //saying what was the initial directory and what we changed it for
@@ -63,17 +64,16 @@ int main() {
                 break;
 
             //get current path
-            if (strcmp(tokens[0], "getpath") == 0 && tokens[1] == NULL) {
+            else if (strcmp(tokens[0], "getpath") == 0 && tokens[1] == NULL) {
                 getPath();
                 continue;
-            } else {
-                printf("Error: Invalid invalid amount of arguments \n");
             }
 
             //set path to whatever is asked
-            if (strcmp(tokens[0], "setpath") == 0 && tokens[1] != NULL && tokens[2] == NULL) {
+            else if (strcmp(tokens[0], "setpath") == 0 && tokens[1] != NULL && tokens[2] == NULL) {
                 setPath(tokens[1]);
-            } else {
+            }
+            else {
                 printf("Error: Invalid invalid amount of arguments\n");
             }
 
@@ -117,7 +117,7 @@ int forkIt () {
 //method that checks if the command is in the list of commands and returns negative value if it is not
 int returncommandIndex(char* command){
     int i = 0;
-    while(command[i] != (char)NULL)
+    while(commands[i] != (char *)NULL)
     {
         if(strcmp(command, commands[i]) == 0){
             return i;
