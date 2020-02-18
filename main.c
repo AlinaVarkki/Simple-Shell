@@ -67,14 +67,14 @@ int main() {
                 getPath();
                 continue;
             } else {
-                printf("Error: Invalid invalid amount of arguments ");
+                printf("Error: Invalid invalid amount of arguments \n");
             }
 
             //set path to whatever is asked
             if (strcmp(tokens[0], "setpath") == 0 && tokens[1] != NULL && tokens[2] == NULL) {
                 setPath(tokens[1]);
             } else {
-                printf("Error: Invalid invalid amount of arguments");
+                printf("Error: Invalid invalid amount of arguments\n");
             }
 
         }
@@ -117,7 +117,7 @@ int forkIt () {
 //method that checks if the command is in the list of commands and returns negative value if it is not
 int returncommandIndex(char* command){
     int i = 0;
-    while(command[i] != NULL)
+    while(command[i] != (char)NULL)
     {
         if(strcmp(command, commands[i]) == 0){
             return i;

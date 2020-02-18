@@ -41,14 +41,13 @@ char** parsingTheLine(char* input) {
 }
 
 /**
- * mehod prints the current path
+ * method prints the current path
  */
 void getPath(){
-        printf(getenv("PATH"));}
-
+        printf("%s\n$>", getenv("PATH"));}
 
 /**
- * mehod sets the current path
+ * method sets the current path
  */
 void setPath(char* directory){
 
