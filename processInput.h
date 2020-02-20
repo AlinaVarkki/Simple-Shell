@@ -14,10 +14,11 @@ char** parsingTheLine(char*);
 void setPath(char* directory);
 void getPath();
 void changeDirectory(char*);
-void aliasThis(char*);
+void aliasThis(char**);
 int returncommandIndex(char* command);
 int alias_counter = 0;
 int getAliasIndex(char *target);
+void unalias(char** );
 
 struct alias{
     char *name;
@@ -85,32 +86,85 @@ int getAliasIndex(char *target){
 /**
  * method to set an alias for a command
  */
-void aliasThis(char* aliasNameAndCommand){
+void aliasThis(char** aliasNameAndCommand){
     int alIndex = getAliasIndex(aliasNameAndCommand[1]);
+    printf("Index: %d\n",alIndex);
     //check if
     if(alias_counter >= 10){
         printf("You already have 10 aliases, no more can be added");
+        return;
     }
-    else if(alIndex == -1){
-        pos = alias_counter;
-        alias_counter++;
-
+    //case when the alias doesn't yet exist and is added to the array
+    //getAliasIndex returns -1 if it doesn't find the alias in the array of aliases
+    if(alIndex == -1){
+        int position = alias_counter;
+        //i starts from 1 because we don't need to consider the called command itself "alias"
+        int i = 2;
+        aliases[position].name = strdup (aliasNameAndCommand[1]);
+        aliases[position].command = strdup(aliasNameAndCommand[i++]);
+        while (aliasNameAndCommand[i] != NULL)
+        {
+            strcat(aliases[position].command," ");
+            strcat(aliases[position].command, aliasNameAndCommand[i]);
+            i++;
+        }
         //add to aliases at pos alias_counter
+        alias_counter++;
     }
+    //case when the alias already exists and is just updated
     else {
-        pos = alIndex;
-    }
-        //adding new alias
-             int i = 1;
+        int position = alIndex;
 
-            while (aliasNameAndCommand[i] != NULL)
-            {
-                strcat(aliases[alIndex].command, aliasNameAndCommand[i]);
-                strcat(aliases[alIndex].command," ");
-                i++;
-            }
+        //adding new alias
+        int i = 1;
+
+        while (aliasNameAndCommand[i] != NULL) {
+            strcat(aliases[alIndex].command, aliasNameAndCommand[i]);
+            strcat(aliases[alIndex].command, " ");
+            i++;
+        }
     }
 }
 
+//remove alias from the list
+void unalias(char** aliasNameAndCommand)
+{
+    int pointer = getAliasIndex(aliasNameAndCommand[1]);
+
+        //if alias exists pointer will return its' position in the array
+
+        //remove alias from array
+        if (pointer >= 0)
+        {
+
+            for (int i = pointer + 1; i < alias_counter; i++)
+            {
+                strcpy(aliases[i - 1].name, aliases[i].name);
+                strcpy(aliases[i - 1].command, aliases[i].command);
+            }
+
+            //decrement alias count
+            alias_counter--;
+        }
+        else
+        {
+            printf("Error: Alias %s does not exist.\n", aliasNameAndCommand[1]);
+        }
+
+}
 
 
+//print the list of aliases
+void print_aliases()
+{
+    int i = 0;
+    if (alias_counter == 0)
+    {
+        printf("You don't have any aliases set\n");
+    }
+    while (i < alias_counter)
+    {
+        printf("%d %s : %s\n", (i+1),aliases[i].name, aliases[i].command);
+        i++;
+    }
+}

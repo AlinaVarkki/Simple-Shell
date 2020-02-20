@@ -25,7 +25,9 @@ char *commands[] = {
         "setpath",
         "cd",
         "getpath",
-        "alias"
+        "alias",
+        "unalias",
+        "printaliases"
 };
 
 int main() {
@@ -54,6 +56,13 @@ int main() {
         }
 
         tokens = parsingTheLine(input);
+        //checking if the first token of the comman is alias and if it is, change it to the real command
+        if(getAliasIndex(tokens[0]) > -1){
+            int pointer = getAliasIndex(tokens[0]);
+            tokens[0] = aliases[pointer].command;
+        }
+
+
 
         //if the method entered is not in the list of commands, execute else and forkit
         if(returncommandIndex(tokens[0]) > -1) {
@@ -81,6 +90,12 @@ int main() {
             }
             else if(strcmp(tokens[0], "alias") == 0 && tokens[1] != NULL && tokens[2] != NULL){
                 aliasThis(tokens);
+            }
+            else if(strcmp(tokens[0], "unalias") == 0 && tokens[1] != NULL && tokens[2] == NULL){
+                unalias(tokens);
+            }
+            else if(strcmp(tokens[0], "printaliases") == 0 && tokens[1] == NULL){
+                print_aliases();
             }
             else {
                 printf("Error: Invalid invalid amount of arguments\n");
