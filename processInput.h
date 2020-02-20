@@ -15,6 +15,11 @@ void setPath(char* directory);
 void getPath();
 void changeDirectory(char*);
 
+typedef struct {
+    int *num;
+    char *input[512];
+} PrevCommand;
+
 
 
 /**

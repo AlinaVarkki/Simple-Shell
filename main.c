@@ -17,18 +17,22 @@ int forkIt();
 char path[500];
 char directory[500];
 char cwd[1000];
+int commandNum = 0;
 int returncommandIndex(char* command);
+char* history[20];
+
+
 
 //list of our command to (hopefully) see if command entered is in the list
 char *commands[] = {
         "exit",
         "setpath",
         "cd",
-        "getpath"
+        "getpath",
+        "history"
 };
 
 int main() {
-
     //saving the current path to restore it later
     strcpy(path, getenv("PATH"));
     //setting current directory to home
@@ -49,10 +53,28 @@ int main() {
         //Windows contingency
         if(strlen(input) == 1){
             printf("$> ");
-            continue;
+
         }
 
-        tokens = parsingTheLine(input);
+
+        // Check for invoke from history commands
+        if (input[0] == '!'){
+            if (input[1] == '!'){
+                tokens = parsingTheLine(history[(commandNum - 1) % 20]);
+            }
+            else if (input[1] == '-'){
+                tokens = parsingTheLine(history[(commandNum + atoi(strtok(input,"!"))) % 20]);
+            }
+            else{
+                tokens = parsingTheLine(history[(atoi(strtok(input,"!"))) % 20]);
+            }
+        }
+        else{
+            // Save as new history and run
+            history[commandNum % 20] = strdup(input);
+            printf("New History: %s", history[commandNum % 20]);
+            tokens = parsingTheLine(input);
+        }
 
         //if the method entered is not in the list of commands, execute else and forkit
         if(returncommandIndex(tokens[0]) > -1) {
@@ -78,6 +100,21 @@ int main() {
                     changeDirectory(tokens[1]);
                 }
             }
+            else if(strcmp(tokens[0],"history") == 0){
+                int counter;
+                if (commandNum > 20) {
+                    counter = commandNum - 20;
+                }
+                else{
+                    counter = 0;
+                }
+                while(counter < commandNum){
+                    printf("%d: %s",counter,history[counter % 20]);
+                    counter += 1;
+                }
+
+
+            }
             else {
                 printf("Error: Invalid invalid amount of arguments\n");
             }
@@ -86,7 +123,7 @@ int main() {
         else {
             forkIt();
         }
-
+        commandNum += 1;
         printf("$> ");
     }
 
