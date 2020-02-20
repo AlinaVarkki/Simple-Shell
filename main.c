@@ -12,6 +12,8 @@
 
 
 #include "processInput.h"
+#include "fileManipulation.h"
+
 char** tokens;
 int forkIt();
 char path[500];
