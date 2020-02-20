@@ -151,4 +151,3 @@ int returncommandIndex(char* command){
     }
     return -1;
 }
-

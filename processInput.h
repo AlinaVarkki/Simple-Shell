@@ -88,8 +88,12 @@ int getAliasIndex(char *target){
  */
 void aliasThis(char** aliasNameAndCommand){
     int alIndex = getAliasIndex(aliasNameAndCommand[1]);
-    printf("Index: %d\n",alIndex);
-    //check if
+
+    //line checks what index does the command have
+    //not needed until testinga
+    //printf("Index: %d\n",alIndex);
+
+
     if(alias_counter >= 10){
         printf("You already have 10 aliases, no more can be added");
         return;
@@ -118,6 +122,8 @@ void aliasThis(char** aliasNameAndCommand){
         //adding new alias
         int i = 1;
 
+        aliases[position].name = strdup (aliasNameAndCommand[1]);
+        aliases[position].command = strdup(aliasNameAndCommand[i++]);
         while (aliasNameAndCommand[i] != NULL) {
             strcat(aliases[alIndex].command, aliasNameAndCommand[i]);
             strcat(aliases[alIndex].command, " ");
