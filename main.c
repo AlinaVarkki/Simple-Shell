@@ -47,12 +47,12 @@ int main() {
     printf("Welcome to our Simple Shell!\n");
 
     char input[512]; //Allocates 512 bytes of null 0. Acts as eof
-    printf("$> ");
+    printf("$>");
 
     while (fgets(input, 512, stdin) != NULL){
         //Windows contingency
         if(strlen(input) == 1){
-            printf("$> ");
+            printf("$>");
 
         }
 
@@ -66,13 +66,17 @@ int main() {
                 tokens = parsingTheLine(history[(commandNum + atoi(strtok(input,"!"))) % 20]);
             }
             else{
-                tokens = parsingTheLine(history[(atoi(strtok(input,"!"))) % 20]);
+                if ((atoi(strtok(input,"!"))) < commandNum)
+                    tokens = parsingTheLine(history[(atoi(strtok(input,"!"))) % 20]);
+                else
+                    printf("Error: Can't go that far back into history, sorry.\n");
             }
         }
         else{
             // Save as new history and run
             history[commandNum % 20] = strdup(input);
             tokens = parsingTheLine(input);
+            commandNum += 1;
         }
 
         //if the method entered is not in the list of commands, execute else and forkit
@@ -100,19 +104,32 @@ int main() {
                 }
             }
             else if(strcmp(tokens[0],"history") == 0){
-                int counter;
-                if (commandNum > 20) {
-                    counter = commandNum - 20;
-                }
-                else{
-                    counter = 0;
-                }
-                while(counter < commandNum){
-                    printf("%d: %s",counter,history[counter % 20]);
-                    counter += 1;
+                int index = 0;
+                int curCommandNum = commandNum-1;
+                if (curCommandNum<20)
+                    while (index<20 && index<(curCommandNum)) {
+                        printf("%d: %s",index,history[index]);
+                        index=(index+1)%20;
+                    }
+                else {
+                    index = (curCommandNum+1)%20;
+                    for (int i=1; i<21; i++){
+                        printf("%d: %s",i,history[index]);
+                        index=(index+1)%20;
+                    }
                 }
 
-
+//                int counter;
+//                if (commandNum-1 > 20) {
+//                    counter = commandNum-1 -20 ;
+//                }
+//                else{
+//                    counter = 0;
+//                }
+//                while(counter < commandNum-1){
+//                    printf("%d: %s",counter,history[counter]);
+//                    counter += 1;
+//                }
             }
             else {
                 printf("Error: Invalid invalid amount of arguments\n");
@@ -122,7 +139,7 @@ int main() {
         else {
             forkIt();
         }
-        commandNum += 1;
+
         printf("$> ");
     }
 
@@ -150,7 +167,7 @@ int forkIt () {
     else {
         pid = wait(&status);        //parent waits for change in status
         if(WIFEXITED(status)){      //separates prompt from error messages
-            printf(" ");
+            printf("");
         }
     }
     return 0;
