@@ -56,10 +56,32 @@ int main() {
         }
 
         tokens = parsingTheLine(input);
-        //checking if the first token of the comman is alias and if it is, change it to the real command
+        //checking if the first token of the command is alias and if it is, change it to the real command
         if(getAliasIndex(tokens[0]) > -1){
             int pointer = getAliasIndex(tokens[0]);
             tokens[0] = aliases[pointer].command;
+
+            int countTokens = 1;
+            while (tokens[countTokens] != NULL)
+                countTokens++;
+            countTokens--;
+
+            char** newTokens = parsingTheLine(tokens[0]);
+
+            int countTokens2 = 0;
+            while (newTokens[countTokens2] != NULL)
+                countTokens2++;
+
+            char** finalTokens = malloc(512);
+
+            for(int i=0;i<countTokens2;i++)
+                finalTokens[i] = newTokens[i];
+
+            for(int i=countTokens2;i<countTokens+countTokens2;i++)
+                finalTokens[i] = tokens[i-countTokens2+1];
+
+            tokens = finalTokens;
+
         }
 
 

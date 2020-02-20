@@ -120,7 +120,7 @@ void aliasThis(char** aliasNameAndCommand){
         int position = alIndex;
 
         //adding new alias
-        int i = 1;
+        int i = 2;
 
         aliases[position].name = strdup (aliasNameAndCommand[1]);
         aliases[position].command = strdup(aliasNameAndCommand[i++]);
