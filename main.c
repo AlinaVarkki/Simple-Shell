@@ -72,7 +72,6 @@ int main() {
         else{
             // Save as new history and run
             history[commandNum % 20] = strdup(input);
-            printf("New History: %s", history[commandNum % 20]);
             tokens = parsingTheLine(input);
         }
 
