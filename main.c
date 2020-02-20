@@ -17,14 +17,15 @@ int forkIt();
 char path[500];
 char directory[500];
 char cwd[1000];
-int returncommandIndex(char* command);
+
 
 //list of our command to (hopefully) see if command entered is in the list
 char *commands[] = {
         "exit",
         "setpath",
         "cd",
-        "getpath"
+        "getpath",
+        "alias"
 };
 
 int main() {
@@ -77,6 +78,9 @@ int main() {
                 else{
                     changeDirectory(tokens[1]);
                 }
+            }
+            else if(strcmp(tokens[0], "alias") == 0 && tokens[1] != NULL && tokens[2] != NULL){
+                aliasThis(tokens);
             }
             else {
                 printf("Error: Invalid invalid amount of arguments\n");
@@ -132,3 +136,4 @@ int returncommandIndex(char* command){
     }
     return -1;
 }
+
