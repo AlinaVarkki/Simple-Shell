@@ -18,6 +18,7 @@ void getPath();
 void changeDirectory(char*);
 int checkIfHistory(char* input);
 char** historyShenanigans(char**, char* history[20], int);
+void printHistory(char* history[20], int);
 
 /**
  * breaking up the input
@@ -98,4 +99,28 @@ char** historyShenanigans(char** tokens, char* history[20], int commandNum) {
         }
     }
     return tokens;
+}
+
+void printHistory(char* history[20], int commandNum) {
+    int index = 0;
+    int curCommandNum = commandNum-1;
+    if (curCommandNum<SIZE_OF_HISTORY) {
+        while (index<SIZE_OF_HISTORY && index<(curCommandNum)) {
+            if (history[index][strlen(history[index])-1] =='\n')
+                printf("%d: %s",index+1,history[index]);
+            else
+                printf("%d: %s\n",index+1,history[index]);
+            index=(index+1)%SIZE_OF_HISTORY;
+        }
+    }
+    else {
+        index = (curCommandNum+1)%SIZE_OF_HISTORY;
+        for (int i=1; i<(SIZE_OF_HISTORY+1); i++){
+            if (history[index][strlen(history[index])-1] =='\n')
+                printf("%d: %s",i,history[index]);
+            else
+                printf("%d: %s\n",i,history[index]);
+            index=(index+1)%SIZE_OF_HISTORY;
+        }
+    }
 }

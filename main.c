@@ -99,32 +99,8 @@ int main() {
                 }
             }
             else if(strcmp(tokens[0],"history") == 0){
-                int index = 0;
-                int curCommandNum = commandNum-1;
-                if (curCommandNum<SIZE_OF_HISTORY) {
-                    while (index<SIZE_OF_HISTORY && index<(curCommandNum)) {
-                        printf("%d: %s",index+1,history[index]);
-                        index=(index+1)%SIZE_OF_HISTORY;
-                    } }
-                else {
-                    index = (curCommandNum+1)%SIZE_OF_HISTORY;
-                    for (int i=1; i<(SIZE_OF_HISTORY+1); i++){
-                        printf("%d: %s",i,history[index]);
-                        index=(index+1)%SIZE_OF_HISTORY;
-                    }}
+                printHistory(history, commandNum);
                 }
-
-//                int counter;
-//                if (commandNum-1 > 20) {
-//                    counter = commandNum-1 -20 ;
-//                }
-//                else{
-//                    counter = 0;
-//                }
-//                while(counter < commandNum-1){
-//                    printf("%d: %s",counter,history[counter]);
-//                    counter += 1;
-//                }
 
             else {
                 printf("Error: Invalid invalid amount of arguments\n");
