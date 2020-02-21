@@ -81,15 +81,17 @@ char** historyShenanigans(char** tokens, char* history[20], int commandNum) {
             }
         }
         else if (!strncmp(tokens[0],"!-",2)){
-            if ((commandNum + atoi(strtok(tokens[0],"!"))) > 0)
-                tokens = parsingTheLine(history[(commandNum + atoi(strtok(tokens[0],"!"))) % SIZE_OF_HISTORY]);
+            int number = (atoi(strtok(tokens[0],"!"))); //the number that has been passed in after !, negative
+            if ((commandNum + number) > 0)
+                tokens = parsingTheLine(history[(commandNum + number) % SIZE_OF_HISTORY]);
             else {
                 printf("Error: Can't go that far back into history, sorry bud.\n");
             }
         }
         else{
-            if ((atoi(strtok(tokens[0],"!"))) < commandNum && (atoi(strtok(tokens[0],"!"))) > 0)
-                tokens = parsingTheLine(history[((atoi(strtok(tokens[0],"!")))-1) % SIZE_OF_HISTORY]);
+            int number = (atoi(strtok(tokens[0],"!"))); //the number that has been passed in after !
+            if (number < commandNum && number > 0)
+                tokens = parsingTheLine(history[(number-1) % SIZE_OF_HISTORY]);
             else {
                 printf("Error: Can't go that far back into history, sorry bud.\n");
             }
