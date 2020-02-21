@@ -7,9 +7,9 @@
 
 #include <stdlib.h>
 #include <unistd.h>
+
 #define TOKENIZERS " |><&;\t\n"
 #define SIZE_OF_HISTORY 20
-
 
 
 char** parsingTheLine(char*);

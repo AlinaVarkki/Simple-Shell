@@ -15,8 +15,6 @@
 
 #define SIZE_OF_HISTORY 20
 
-//int const SIZE_OF_HISTORY = 20;
-
 #include "fileManipulation.h"
 
 char** tokens;
@@ -28,11 +26,7 @@ int commandNum = 0;
 int returncommandIndex(char* command);
 char* history[SIZE_OF_HISTORY];
 
-
-
-
-
-//list of our command to (hopefully) see if command entered is in the list
+//list of our command to see if command entered is in the list
 char *commands[] = {
         "exit",
         "setpath",
@@ -52,6 +46,13 @@ int main() {
     printf("Initial path is %s \n", path);
     getcwd(cwd, sizeof(cwd)); // using this to get the current directory(to make sure that it is home)
     printf("The directory is %s \n", cwd);
+
+    //gets history from a file
+//    loadHistory(&commandNum, &history[SIZE_OF_HISTORY]);
+//    printf("Loading history from file, n of commands: %d, history:\n", commandNum);
+//    printHistory(history, commandNum);
+
+
 
     printf("Welcome to our Simple Shell!\n");
 
@@ -99,6 +100,8 @@ int main() {
             else if (strcmp(tokens[0], "setpath") == 0 && tokens[1] != NULL && tokens[2] == NULL) {
                 setPath(tokens[1]);
             }
+
+            //changing the directory
             else if (strcmp(tokens[0],"cd")== 0){
                 if(tokens[1] == NULL){
                     changeDirectory(directory);
@@ -107,10 +110,13 @@ int main() {
                     changeDirectory(tokens[1]);
                 }
             }
+
+            //prints out history
             else if(strcmp(tokens[0],"history") == 0){
                 printHistory(history, commandNum);
                 }
 
+            //invalid number of arguments for one of our pre-defined functions
             else {
                 printf("Error: Invalid invalid amount of arguments\n");
             }
@@ -119,9 +125,12 @@ int main() {
         else {
             forkIt();
         }
-
         printf("$> ");
     }
+
+    //closing the shell
+    int check = saveHistory(history, commandNum);
+    printf("Check if history save is success: %d\n", check);
 
     //set the environment back to the original one
     setenv("PATH", path,1);

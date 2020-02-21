@@ -6,11 +6,12 @@
 #define UNTITLED_FILEMANIPULATION_H
 
 #endif //UNTITLED_FILEMANIPULATION_H
+#define SIZE_OF_HISTORY 20
 
 int saveAliases(char* object);
-char* loadAliases(;
-int saveHistory(char* object, int pos);
-char* loadHistory();
+char* loadAliases();
+int saveHistory(char* history[], int pos);
+char* loadHistory(int*, char* history[SIZE_OF_HISTORY]);
 
 //int saveAliases(char* object) {
 //    //opening up file and setting it all up
@@ -59,7 +60,7 @@ char* loadHistory();
 //    return l;
 //}
 
-int saveHistory(char* object, int pos) {
+int saveHistory(char* history[SIZE_OF_HISTORY], int pos) {
     //opening up file and setting it all up
     char* fname = ".hist_list";
     FILE *fp;
@@ -70,7 +71,7 @@ int saveHistory(char* object, int pos) {
     //saving shit
 
     //check if there is something in history to save
-    if (object == NULL) {
+    if (history == NULL) {
         return -1;
     }
 
@@ -78,38 +79,53 @@ int saveHistory(char* object, int pos) {
     fprintf(fp, "%d\n", pos);
     int i = 0;
     while (i<20 && i<pos) {
-        fprintf(fp, "%s\n", object[i]);
+        if (history[i][strlen(history[i])-1]=='\n')
+            fprintf(fp, "%s", history[i]);
+        fprintf(fp, "%s\n", history[i]);
         i++;
     }
     //closing the file
     int closed = fclose(fp);
     if (closed != 0)
         return -1;
-
+    return 1;
 }
 
-char* loadHistory() {
-    char* history[20];
+char* loadHistory(int* commandNum, char* history[SIZE_OF_HISTORY]) {
     //opens file for reading
+
     char* fname = ".hist_list";
     FILE *fp;
     fp = fopen(fname, "r");
+
     if (fp == NULL) {
         return NULL; }
 
     //reads shit
     char buffer[255];
-    int pos;
-    fscanf(fp, "%d\n",  &pos);
+    int pos = 0;
+    fscanf(fp, "%d\n", &pos);
+    printf("%d\n", pos);
     int i = 0;
-    while (i<20 && i<pos) {
-        fgets(buffer, 255, fp);
-        char* val = malloc(strlen(buffer));
-        strcpy(val, buffer);
-        val[strlen(val)-1] = '\0';
-        history[(pos+i)%20] = val;
-    }
+    while (i<SIZE_OF_HISTORY && i<pos) {
+        char* val;
+        fgets(buffer, 512, fp);
+        printf("%s\n",buffer);
+        i++;
+        }
+
+//        char* val = malloc(strlen(buffer));
+//        strcpy(val, buffer);
+//        if(val == NULL) {
+//            printf("here\n");
+//            continue; }
+//        val[strlen(val)-1] = '\n';
+//        int x = (pos+i)%SIZE_OF_HISTORY;
+//        printf("%d: %s\n", x, val);
+//        history[i] = val;
+
+    *commandNum = pos%20;
     //finishing up
     fclose(fp);
-    return history;
+    return *history;
 }
