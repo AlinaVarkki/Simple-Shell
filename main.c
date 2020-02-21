@@ -12,6 +12,9 @@
 
 
 #include "processInput.h"
+
+int const SIZE_OF_HISTORY = 20;
+
 char** tokens;
 int forkIt();
 char path[500];
@@ -19,7 +22,9 @@ char directory[500];
 char cwd[1000];
 int commandNum = 0;
 int returncommandIndex(char* command);
-char* history[20];
+char* history[SIZE_OF_HISTORY];
+
+
 
 
 
@@ -53,28 +58,39 @@ int main() {
         //Windows contingency
         if(strlen(input) == 1){
             printf("$>");
-
         }
 
 
         // Check for invoke from history commands
-        if (input[0] == '!'){
-            if (input[1] == '!'){
-                tokens = parsingTheLine(history[(commandNum - 1) % 20]);
-            }
-            else if (input[1] == '-'){
-                tokens = parsingTheLine(history[(commandNum + atoi(strtok(input,"!"))) % 20]);
-            }
-            else{
-                if ((atoi(strtok(input,"!"))) < commandNum)
-                    tokens = parsingTheLine(history[(atoi(strtok(input,"!"))) % 20]);
-                else
-                    printf("Error: Can't go that far back into history, sorry.\n");
+        if (checkIfHistory(input)) {
+            tokens = parsingTheLine(input);
+            if (strcspn(tokens[0],"!")==0){
+                if (!strncmp(tokens[0],"!!",2)){
+                    if (commandNum != 0)
+                        tokens = parsingTheLine(history[(commandNum - 1) % SIZE_OF_HISTORY]);
+                    else {
+                        printf("Error: Can't go that far back into history, sorry bud.\n");
+                    }
+                }
+                else if (!strncmp(tokens[0],"!-",2)){
+                    if ((commandNum + atoi(strtok(tokens[0],"!"))) >= 0)
+                        tokens = parsingTheLine(history[(commandNum + atoi(strtok(tokens[0],"!"))) % SIZE_OF_HISTORY]);
+                    else {
+                        printf("Error: Can't go that far back into history, sorry bud.\n");
+                    }
+                }
+                else{
+                    if ((atoi(strtok(tokens[0],"!"))) < commandNum && (atoi(strtok(tokens[0],"!"))) > 0)
+                        tokens = parsingTheLine(history[((atoi(strtok(tokens[0],"!")))-1) % SIZE_OF_HISTORY]);
+                    else {
+                        printf("Error: Can't go that far back into history, sorry bud.\n");
+                    }
+                }
             }
         }
         else{
             // Save as new history and run
-            history[commandNum % 20] = strdup(input);
+            history[commandNum % SIZE_OF_HISTORY] = strdup(input);
             tokens = parsingTheLine(input);
             commandNum += 1;
         }
@@ -106,17 +122,17 @@ int main() {
             else if(strcmp(tokens[0],"history") == 0){
                 int index = 0;
                 int curCommandNum = commandNum-1;
-                if (curCommandNum<20)
-                    while (index<20 && index<(curCommandNum)) {
-                        printf("%d: %s",index,history[index]);
-                        index=(index+1)%20;
-                    }
+                if (curCommandNum<SIZE_OF_HISTORY) {
+                    while (index<SIZE_OF_HISTORY && index<(curCommandNum)) {
+                        printf("%d: %s",index+1,history[index]);
+                        index=(index+1)%SIZE_OF_HISTORY;
+                    } }
                 else {
-                    index = (curCommandNum+1)%20;
-                    for (int i=1; i<21; i++){
+                    index = (curCommandNum+1)%SIZE_OF_HISTORY;
+                    for (int i=1; i<(SIZE_OF_HISTORY+1); i++){
                         printf("%d: %s",i,history[index]);
-                        index=(index+1)%20;
-                    }
+                        index=(index+1)%SIZE_OF_HISTORY;
+                    }}
                 }
 
 //                int counter;
@@ -130,7 +146,7 @@ int main() {
 //                    printf("%d: %s",counter,history[counter]);
 //                    counter += 1;
 //                }
-            }
+
             else {
                 printf("Error: Invalid invalid amount of arguments\n");
             }

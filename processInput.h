@@ -14,12 +14,7 @@ char** parsingTheLine(char*);
 void setPath(char* directory);
 void getPath();
 void changeDirectory(char*);
-
-typedef struct {
-    int *num;
-    char *input[512];
-} PrevCommand;
-
+int checkIfHistory(char* input);
 
 
 /**
@@ -66,3 +61,10 @@ void getPath(){
 void setPath(char* directory){
     setenv("PATH",directory,1);
     }
+
+int checkIfHistory(char* input) {
+    if (strcspn(input, "!") < strlen(input))
+        return 1;
+    else
+        return 0;
+}
