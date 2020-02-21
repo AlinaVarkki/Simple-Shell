@@ -8,6 +8,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 #define TOKENIZERS " |><&;\t\n"
+#define SIZE_OF_HISTORY 20
+
 
 
 char** parsingTheLine(char*);
@@ -15,7 +17,7 @@ void setPath(char* directory);
 void getPath();
 void changeDirectory(char*);
 int checkIfHistory(char* input);
-
+char** historyShenanigans(char**, char* history[20], int);
 
 /**
  * breaking up the input
@@ -67,4 +69,31 @@ int checkIfHistory(char* input) {
         return 1;
     else
         return 0;
+}
+
+char** historyShenanigans(char** tokens, char* history[20], int commandNum) {
+    if (strcspn(tokens[0],"!")==0){
+        if (!strncmp(tokens[0],"!!",2)){
+            if (commandNum != 0) {
+                tokens = parsingTheLine(history[(commandNum - 1) % SIZE_OF_HISTORY]); }
+            else {
+                printf("Error: Can't go that far back into history, sorry bud.\n");
+            }
+        }
+        else if (!strncmp(tokens[0],"!-",2)){
+            if ((commandNum + atoi(strtok(tokens[0],"!"))) > 0)
+                tokens = parsingTheLine(history[(commandNum + atoi(strtok(tokens[0],"!"))) % SIZE_OF_HISTORY]);
+            else {
+                printf("Error: Can't go that far back into history, sorry bud.\n");
+            }
+        }
+        else{
+            if ((atoi(strtok(tokens[0],"!"))) < commandNum && (atoi(strtok(tokens[0],"!"))) > 0)
+                tokens = parsingTheLine(history[((atoi(strtok(tokens[0],"!")))-1) % SIZE_OF_HISTORY]);
+            else {
+                printf("Error: Can't go that far back into history, sorry bud.\n");
+            }
+        }
+    }
+    return tokens;
 }

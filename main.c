@@ -13,7 +13,9 @@
 
 #include "processInput.h"
 
-int const SIZE_OF_HISTORY = 20;
+#define SIZE_OF_HISTORY 20
+
+//int const SIZE_OF_HISTORY = 20;
 
 char** tokens;
 int forkIt();
@@ -63,30 +65,7 @@ int main() {
 
         // Check for invoke from history commands
         if (checkIfHistory(input)) {
-            tokens = parsingTheLine(input);
-            if (strcspn(tokens[0],"!")==0){
-                if (!strncmp(tokens[0],"!!",2)){
-                    if (commandNum != 0)
-                        tokens = parsingTheLine(history[(commandNum - 1) % SIZE_OF_HISTORY]);
-                    else {
-                        printf("Error: Can't go that far back into history, sorry bud.\n");
-                    }
-                }
-                else if (!strncmp(tokens[0],"!-",2)){
-                    if ((commandNum + atoi(strtok(tokens[0],"!"))) >= 0)
-                        tokens = parsingTheLine(history[(commandNum + atoi(strtok(tokens[0],"!"))) % SIZE_OF_HISTORY]);
-                    else {
-                        printf("Error: Can't go that far back into history, sorry bud.\n");
-                    }
-                }
-                else{
-                    if ((atoi(strtok(tokens[0],"!"))) < commandNum && (atoi(strtok(tokens[0],"!"))) > 0)
-                        tokens = parsingTheLine(history[((atoi(strtok(tokens[0],"!")))-1) % SIZE_OF_HISTORY]);
-                    else {
-                        printf("Error: Can't go that far back into history, sorry bud.\n");
-                    }
-                }
-            }
+            tokens = historyShenanigans(parsingTheLine(input), history, commandNum);
         }
         else{
             // Save as new history and run
