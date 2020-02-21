@@ -65,7 +65,14 @@ int main() {
 
         // Check for invoke from history commands
         if (checkIfHistory(input)) {
-            tokens = historyShenanigans(parsingTheLine(input), history, commandNum);
+            tokens = parsingTheLine(input);
+            if (strcspn(tokens[0],"!")==0)
+                tokens = historyShenanigans(parsingTheLine(input), history, commandNum);
+            else {
+                history[commandNum % SIZE_OF_HISTORY] = strdup(input);
+                tokens = parsingTheLine(input);
+                commandNum += 1;
+            }
         }
         else{
             // Save as new history and run

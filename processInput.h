@@ -85,6 +85,8 @@ char** historyShenanigans(char** tokens, char* history[20], int commandNum) {
             int number = (atoi(strtok(tokens[0],"!"))); //the number that has been passed in after !, negative
             if ((commandNum + number) > 0)
                 tokens = parsingTheLine(history[(commandNum + number) % SIZE_OF_HISTORY]);
+            else if (number ==0)
+                printf("Error: That's some invalid input there, bro.\n");
             else {
                 printf("Error: Can't go that far back into history, sorry bud.\n");
             }
@@ -93,6 +95,8 @@ char** historyShenanigans(char** tokens, char* history[20], int commandNum) {
             int number = (atoi(strtok(tokens[0],"!"))); //the number that has been passed in after !
             if (number < commandNum && number > 0)
                 tokens = parsingTheLine(history[(number-1) % SIZE_OF_HISTORY]);
+            else if (number ==0)
+                printf("Error: That's some invalid input there, bro.\n");
             else {
                 printf("Error: Can't go that far back into history, sorry bud.\n");
             }
