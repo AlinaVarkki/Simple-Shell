@@ -2,16 +2,12 @@
 // Created by Slavka Borovska on 20/02/2020.
 //
 
-#ifndef UNTITLED_FILEMANIPULATION_H
-#define UNTITLED_FILEMANIPULATION_H
-
-#endif //UNTITLED_FILEMANIPULATION_H
 #define SIZE_OF_HISTORY 20
 
 int saveAliases(char* object);
 char* loadAliases();
 int saveHistory(char* history[], int pos);
-char* loadHistory(int*, char* history[SIZE_OF_HISTORY]);
+char** loadHistory(int*);
 
 //int saveAliases(char* object) {
 //    //opening up file and setting it all up
@@ -77,11 +73,17 @@ int saveHistory(char* history[SIZE_OF_HISTORY], int pos) {
 
     //saving history
     fprintf(fp, "%d\n", pos);
+    printf("saving: %d\n", pos);
     int i = 0;
     while (i<20 && i<pos) {
-        if (history[i][strlen(history[i])-1]=='\n')
+        if (history[i][strlen(history[i])-1]=='\n') {
             fprintf(fp, "%s", history[i]);
-        fprintf(fp, "%s\n", history[i]);
+            printf("saving: %s", history[i]);
+        }
+        else {
+            fprintf(fp, "%s\n", history[i]);
+            printf("saving: %s\n", history[i]);
+        }
         i++;
     }
     //closing the file
@@ -91,41 +93,31 @@ int saveHistory(char* history[SIZE_OF_HISTORY], int pos) {
     return 1;
 }
 
-char* loadHistory(int* commandNum, char* history[SIZE_OF_HISTORY]) {
+char** loadHistory(int* commandNum) {
+    char** tempHistory = malloc(512);
     //opens file for reading
-
     char* fname = ".hist_list";
     FILE *fp;
     fp = fopen(fname, "r");
-
     if (fp == NULL) {
         return NULL; }
 
     //reads shit
-    char buffer[255];
+    char buffer[512];
     int pos = 0;
     fscanf(fp, "%d\n", &pos);
-    printf("%d\n", pos);
     int i = 0;
+    char* tempCommand = malloc(512);
     while (i<SIZE_OF_HISTORY && i<pos) {
-        char* val;
         fgets(buffer, 512, fp);
-        printf("%s\n",buffer);
+        strcpy(tempCommand, buffer);
+        tempHistory[i] = tempCommand;
+        printf("%d. command loading: %s",i+1, tempHistory[i]);
         i++;
         }
-
-//        char* val = malloc(strlen(buffer));
-//        strcpy(val, buffer);
-//        if(val == NULL) {
-//            printf("here\n");
-//            continue; }
-//        val[strlen(val)-1] = '\n';
-//        int x = (pos+i)%SIZE_OF_HISTORY;
-//        printf("%d: %s\n", x, val);
-//        history[i] = val;
-
-    *commandNum = pos%20;
     //finishing up
+    *commandNum = pos;
+    free(tempCommand);
     fclose(fp);
-    return *history;
+    return tempHistory;
 }

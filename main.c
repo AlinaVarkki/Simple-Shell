@@ -25,6 +25,7 @@ char cwd[1000];
 int commandNum = 0;
 int returncommandIndex(char* command);
 char* history[SIZE_OF_HISTORY];
+char** tempHistory;
 
 //list of our command to see if command entered is in the list
 char *commands[] = {
@@ -48,7 +49,13 @@ int main() {
     printf("The directory is %s \n", cwd);
 
     //gets history from a file
-//    loadHistory(&commandNum, &history[SIZE_OF_HISTORY]);
+   // char** tempHistory = malloc(512);
+     tempHistory = loadHistory(&commandNum);
+    printf("%d\n", commandNum);
+    for(int i=0; i<commandNum; i++) {
+        printf("tempHistory[%d] = %s\n", i+1, tempHistory[i]);
+        history[i] = tempHistory[i]; }
+  //  free(tempHistory);
 //    printf("Loading history from file, n of commands: %d, history:\n", commandNum);
 //    printHistory(history, commandNum);
 
@@ -63,8 +70,8 @@ int main() {
         //Windows contingency
         if(strlen(input) == 1){
             printf("$>");
+            continue;
         }
-
 
         // Check for invoke from history commands
         if (checkIfHistory(input)) {

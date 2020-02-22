@@ -66,10 +66,10 @@ void setPath(char* directory){
     }
 
 int checkIfHistory(char* input) {
-    if (strcspn(input, "!") < strlen(input))
-        return 1;
-    else
-        return 0;
+    if (strcspn(input, "!") < strlen(input)) {
+        return 1; }
+    else {
+        return 0; }
 }
 
 char** historyShenanigans(char** tokens, char* history[20], int commandNum) {
