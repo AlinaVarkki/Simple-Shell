@@ -18,7 +18,7 @@ void aliasThis(char**);
 int returncommandIndex(char* command);
 int alias_counter = 0;
 int getAliasIndex(char *target);
-void unalias(char** );
+void unalias(char**);
 
 struct alias{
     char *name;

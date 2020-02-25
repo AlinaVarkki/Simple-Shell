@@ -9,9 +9,9 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <sys/wait.h>
-
-
 #include "processInput.h"
+#include "fileManipulation.h"
+
 char** tokens;
 int forkIt();
 char path[500];
@@ -41,6 +41,9 @@ int main() {
     printf("Initial path is %s \n", path);
     getcwd(cwd, sizeof(cwd)); // using this to get the current directory(to make sure that it is home)
     printf("The directory is %s \n", cwd);
+
+
+    printf("Loaded %d alias(es)\n",loadAliases());
 
     printf("Welcome to our Simple Shell!\n");
 
@@ -82,8 +85,6 @@ int main() {
             tokens = finalTokens;
 
         }
-
-
 
         //if the method entered is not in the list of commands, execute else and forkit
         if(returncommandIndex(tokens[0]) > -1) {
@@ -130,11 +131,20 @@ int main() {
         printf("$> ");
     }
 
+    //closing the shell
+    strcpy(directory, getenv("HOME"));
+    chdir(directory);
+
+    if(alias_counter != 0) {
+        int check = saveAliases();
+        printf("Check if alias save is success: %d\n", check);
+    }
+
     //set the environment back to the original one
     setenv("PATH", path,1);
     printf("Path is restored to %s \n", path);
-
     return 1;
+
 }
 
 int forkIt () {
