@@ -64,7 +64,7 @@ int saveHistory(char* history[SIZE_OF_HISTORY], int pos) {
     if (fp == NULL) {
         return -1; }
 
-    //saving shit
+    //saving
 
     //check if there is something in history to save
     if (history == NULL) {
@@ -112,7 +112,7 @@ char** loadHistory(int* commandNum) {
         char* tempCommand = malloc(512);
         strcpy(tempCommand, buffer);
         tempHistory1[i] = tempCommand;
-        printf("%d. command loading: %s",i+1, tempHistory1[i]);
+        //printf("%d. command loading: %s",i+1, tempHistory1[i]);
         i++;
         }
     //finishing up
