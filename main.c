@@ -51,7 +51,7 @@ int main() {
     printf("The directory is %s \n", cwd);
 
     //gets history from a file
-     tempHistory = loadHistory(&commandNum);
+    tempHistory = loadHistory(&commandNum);
     for(int i=0; (i<commandNum && i<SIZE_OF_HISTORY); i++) {
         history[i] = tempHistory[i];
     }

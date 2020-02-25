@@ -112,7 +112,7 @@ char** loadHistory(int* commandNum) {
         char* tempCommand = malloc(512);
         strcpy(tempCommand, buffer);
         tempHistory1[i] = tempCommand;
-        printf("%d. command loading: %s, %s",i+1, tempHistory1[i]);
+        printf("%d. command loading: %s",i+1, tempHistory1[i]);
         i++;
         }
     //finishing up
