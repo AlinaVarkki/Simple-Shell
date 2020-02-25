@@ -52,17 +52,15 @@ int main() {
 
     //gets history from a file
     tempHistory = loadHistory(&commandNum);
-    int counter = 0;
     for(int i=0; (i<commandNum && i<SIZE_OF_HISTORY); i++) {
         history[i] = tempHistory[i];
-        counter += 1;
     }
-    printf("Loading history from file, %d commands, current command %d (%d of %d):\n", counter, commandNum + 1, (commandNum + 1)%SIZE_OF_HISTORY,SIZE_OF_HISTORY);
-   //printHistory(history, commandNum+1);
+    printf("Loading history from file, %d of commands, current command %d:\n", commandNum, commandNum%SIZE_OF_HISTORY);
+    printHistory(history, commandNum+1);
 
     printf("\n+------------------------------+\n"
-             "| Welcome to our Simple Shell! |\n"
-             "+------------------------------+\n\n");
+           "| Welcome to our Simple Shell! |\n"
+           "+------------------------------+\n\n");
 
     char input[512]; //Allocates 512 bytes of null 0. Acts as eof
     printf("$>");
@@ -98,18 +96,18 @@ int main() {
             if (strcmp(tokens[0], "exit") == 0 && tokens[1] == NULL)
                 break;
 
-            //get current path
+                //get current path
             else if (strcmp(tokens[0], "getpath") == 0 && tokens[1] == NULL) {
                 getPath();
                 continue;
             }
 
-            //set path to whatever is asked
+                //set path to whatever is asked
             else if (strcmp(tokens[0], "setpath") == 0 && tokens[1] != NULL && tokens[2] == NULL) {
                 setPath(tokens[1]);
             }
 
-            //changing the directory
+                //changing the directory
             else if (strcmp(tokens[0],"cd")== 0){
                 if(tokens[1] == NULL){
                     changeDirectory(directory);
@@ -119,17 +117,17 @@ int main() {
                 }
             }
 
-            //prints out history
+                //prints out history
             else if(strcmp(tokens[0],"history") == 0){
                 printHistory(history, commandNum);
-                }
+            }
 
             else if (strcmp(tokens[0],"clearh")==0) {
                 commandNum = 0;
                 *history = NULL;
             }
 
-            //invalid number of arguments for one of our pre-defined functions
+                //invalid number of arguments for one of our pre-defined functions
             else {
                 printf("Error: Invalid invalid amount of arguments\n");
             }
@@ -142,16 +140,13 @@ int main() {
     }
 
     //closing the shell
-    strcpy(directory, getenv("HOME"));
-    chdir(directory);
-
     int check = saveHistory(history, commandNum);
     printf("Check if history save is success: %d\n", check);
 
-    //printf("This has been saved:\n");
+    printf("This has been saved:\n");
     tempHistory = loadHistory(&commandNum);
-    //for(int i=0; (i<commandNum && i<SIZE_OF_HISTORY); i++) {
-    //    printf("%d: %s", i+1, tempHistory[i]); }
+    for(int i=0; (i<commandNum && i<SIZE_OF_HISTORY); i++) {
+        printf("%d: %s", i+1, tempHistory[i]); }
 
 
     //set the environment back to the original one
