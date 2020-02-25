@@ -9,7 +9,6 @@
 #include <unistd.h>
 #define TOKENIZERS " |><&;\t\n"
 
-
 char** parsingTheLine(char*);
 void setPath(char* directory);
 void getPath();
@@ -24,8 +23,6 @@ struct alias{
     char *name;
     char *command;
 }aliases[10];
-
-
 
 /**
  * breaking up the input
@@ -49,8 +46,6 @@ char** parsingTheLine(char* input) {
 
     return tokens;
 }
-
-
 
 void changeDirectory(char* nDirectory){
     int test = chdir(nDirectory);
@@ -92,7 +87,6 @@ void aliasThis(char** aliasNameAndCommand){
     //line checks what index does the command have
     //not needed until testinga
     //printf("Index: %d\n",alIndex);
-
 
     if(alias_counter >= 10){
         printf("You already have 10 aliases, no more can be added");
@@ -158,7 +152,6 @@ void unalias(char** aliasNameAndCommand)
         }
 
 }
-
 
 //print the list of aliases
 void print_aliases()

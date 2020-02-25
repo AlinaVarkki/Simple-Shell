@@ -9,15 +9,13 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <sys/wait.h>
-
-
 #include "processInput.h"
+
 char** tokens;
 int forkIt();
 char path[500];
 char directory[500];
 char cwd[1000];
-
 
 //list of our command to (hopefully) see if command entered is in the list
 char *commands[] = {
@@ -56,34 +54,37 @@ int main() {
 
         tokens = parsingTheLine(input);
         //checking if the first token of the command is alias and if it is, change it to the real command
-        if(getAliasIndex(tokens[0]) > -1){
-            int pointer = getAliasIndex(tokens[0]);
-            tokens[0] = strdup(aliases[pointer].command);
 
-            int countTokens = 1;
-            while (tokens[countTokens] != NULL)
-                countTokens++;
-            countTokens--;
 
-            char** newTokens = parsingTheLine(tokens[0]);
-
-            int countTokens2 = 0;
-            while (newTokens[countTokens2] != NULL)
-                countTokens2++;
-
-            char** finalTokens = malloc(512);
-
-            for(int i=0;i<countTokens2;i++)
-                finalTokens[i] = newTokens[i];
-
-            for(int i=countTokens2;i<countTokens+countTokens2;i++)
-                finalTokens[i] = tokens[i-countTokens2+1];
-
-            tokens = finalTokens;
+        for (int j = 0; j <10 ; j++) {
+            if (getAliasIndex(tokens[0]) > -1) {
+                //if the index is more than -1, it should get to -1 until knowing what command to execute
+                int pointer = getAliasIndex(tokens[0]);
+                tokens[0] = strdup(aliases[pointer].command);
+            }
 
         }
 
+        int countTokens = 1;
+        while (tokens[countTokens] != NULL)
+            countTokens++;
+        countTokens--;
 
+        char **newTokens = parsingTheLine(tokens[0]);
+
+        int countTokens2 = 0;
+        while (newTokens[countTokens2] != NULL)
+            countTokens2++;
+
+        char **finalTokens = malloc(512);
+
+        for (int i = 0; i < countTokens2; i++)
+            finalTokens[i] = newTokens[i];
+
+        for (int i = countTokens2; i < countTokens + countTokens2; i++)
+            finalTokens[i] = tokens[i - countTokens2 + 1];
+
+        tokens = finalTokens;
 
         //if the method entered is not in the list of commands, execute else and forkit
         if(returncommandIndex(tokens[0]) > -1) {
