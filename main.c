@@ -25,9 +25,8 @@ char *commands[] = {
         "setpath",
         "cd",
         "getpath",
-        "alias",
-        "unalias",
-        "printaliases"
+        "alias", //if only "alises" is typed, it prints the list of aliases
+        "unalias"
 };
 
 int main() {
@@ -59,7 +58,7 @@ int main() {
         //checking if the first token of the command is alias and if it is, change it to the real command
         if(getAliasIndex(tokens[0]) > -1){
             int pointer = getAliasIndex(tokens[0]);
-            tokens[0] = aliases[pointer].command;
+            tokens[0] = strdup(aliases[pointer].command);
 
             int countTokens = 1;
             while (tokens[countTokens] != NULL)
@@ -116,7 +115,7 @@ int main() {
             else if(strcmp(tokens[0], "unalias") == 0 && tokens[1] != NULL && tokens[2] == NULL){
                 unalias(tokens);
             }
-            else if(strcmp(tokens[0], "printaliases") == 0 && tokens[1] == NULL){
+            else if(strcmp(tokens[0], "alias") == 0 && tokens[1] == NULL){
                 print_aliases();
             }
             else {
