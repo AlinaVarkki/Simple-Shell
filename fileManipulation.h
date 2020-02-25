@@ -112,14 +112,11 @@ char** loadHistory(int* commandNum) {
         char* tempCommand = malloc(512);
         strcpy(tempCommand, buffer);
         tempHistory1[i] = tempCommand;
-        printf("%d. command loading: %s, %s",i+1, tempHistory1[i],tempHistory1[0]);
+        printf("%d. command loading: %s, %s",i+1, tempHistory1[i]);
         i++;
         }
     //finishing up
     *commandNum = pos;
- // free(tempCommand);
     fclose(fp);
-    for(int i=0; (i<*commandNum && i<SIZE_OF_HISTORY); i++) {
-        printf("%d: %s", i+1, tempHistory1[i]); }
     return tempHistory1;
 }

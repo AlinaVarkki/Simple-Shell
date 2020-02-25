@@ -51,12 +51,9 @@ int main() {
     printf("The directory is %s \n", cwd);
 
     //gets history from a file
-   // char** tempHistory = malloc(512);
      tempHistory = loadHistory(&commandNum);
     for(int i=0; (i<commandNum && i<SIZE_OF_HISTORY); i++) {
-     //   strcpy(tempHistory[i],history[i]);
         history[i] = tempHistory[i];
-  //      printf("should have been saved: %s got saved %s", tempHistory[i], history[i]);
     }
     printf("Loading history from file, %d of commands, current command %d:\n", commandNum, commandNum%SIZE_OF_HISTORY);
     printHistory(history, commandNum+1);
