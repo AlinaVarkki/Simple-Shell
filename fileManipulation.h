@@ -75,7 +75,7 @@ int saveHistory(char* history[SIZE_OF_HISTORY], int pos) {
     fprintf(fp, "%d\n", pos);
     printf("saving: %d\n", pos);
     int i = 0;
-    while (i<20 && i<pos) {
+    while (i<SIZE_OF_HISTORY && i<pos) {
         if (history[i][strlen(history[i])-1]=='\n') {
             fprintf(fp, "%s", history[i]);
             printf("saving: %s", history[i]);
@@ -94,7 +94,7 @@ int saveHistory(char* history[SIZE_OF_HISTORY], int pos) {
 }
 
 char** loadHistory(int* commandNum) {
-    char** tempHistory = malloc(512);
+    char** tempHistory1 = malloc(512);
     //opens file for reading
     char* fname = ".hist_list";
     FILE *fp;
@@ -107,17 +107,19 @@ char** loadHistory(int* commandNum) {
     int pos = 0;
     fscanf(fp, "%d\n", &pos);
     int i = 0;
-    char* tempCommand = malloc(512);
     while (i<SIZE_OF_HISTORY && i<pos) {
         fgets(buffer, 512, fp);
+        char* tempCommand = malloc(512);
         strcpy(tempCommand, buffer);
-        tempHistory[i] = tempCommand;
-        printf("%d. command loading: %s",i+1, tempHistory[i]);
+        tempHistory1[i] = tempCommand;
+        printf("%d. command loading: %s, %s",i+1, tempHistory1[i],tempHistory1[0]);
         i++;
         }
     //finishing up
     *commandNum = pos;
-    free(tempCommand);
+ // free(tempCommand);
     fclose(fp);
-    return tempHistory;
+    for(int i=0; (i<*commandNum && i<SIZE_OF_HISTORY); i++) {
+        printf("%d: %s", i+1, tempHistory1[i]); }
+    return tempHistory1;
 }

@@ -33,7 +33,9 @@ char *commands[] = {
         "setpath",
         "cd",
         "getpath",
-        "history"
+        "history",
+        "clearh",
+        NULL
 };
 
 int main() {
@@ -51,17 +53,17 @@ int main() {
     //gets history from a file
    // char** tempHistory = malloc(512);
      tempHistory = loadHistory(&commandNum);
-    printf("%d\n", commandNum);
-    for(int i=0; i<commandNum; i++) {
-        printf("tempHistory[%d] = %s\n", i+1, tempHistory[i]);
-        history[i] = tempHistory[i]; }
-  //  free(tempHistory);
-//    printf("Loading history from file, n of commands: %d, history:\n", commandNum);
-//    printHistory(history, commandNum);
+    for(int i=0; (i<commandNum && i<SIZE_OF_HISTORY); i++) {
+     //   strcpy(tempHistory[i],history[i]);
+        history[i] = tempHistory[i];
+  //      printf("should have been saved: %s got saved %s", tempHistory[i], history[i]);
+    }
+    printf("Loading history from file, %d of commands, current command %d:\n", commandNum, commandNum%SIZE_OF_HISTORY);
+    printHistory(history, commandNum+1);
 
-
-
-    printf("Welcome to our Simple Shell!\n");
+    printf("\n+------------------------------+\n"
+             "| Welcome to our Simple Shell! |\n"
+             "+------------------------------+\n\n");
 
     char input[512]; //Allocates 512 bytes of null 0. Acts as eof
     printf("$>");
@@ -123,6 +125,11 @@ int main() {
                 printHistory(history, commandNum);
                 }
 
+            else if (strcmp(tokens[0],"clearh")==0) {
+                commandNum = 0;
+                *history = NULL;
+            }
+
             //invalid number of arguments for one of our pre-defined functions
             else {
                 printf("Error: Invalid invalid amount of arguments\n");
@@ -139,10 +146,15 @@ int main() {
     int check = saveHistory(history, commandNum);
     printf("Check if history save is success: %d\n", check);
 
+    printf("This has been saved:\n");
+    tempHistory = loadHistory(&commandNum);
+    for(int i=0; (i<commandNum && i<SIZE_OF_HISTORY); i++) {
+        printf("%d: %s", i+1, tempHistory[i]); }
+
+
     //set the environment back to the original one
     setenv("PATH", path,1);
     printf("Path is restored to %s \n", path);
-
     return 1;
 }
 
