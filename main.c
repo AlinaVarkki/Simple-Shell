@@ -12,14 +12,22 @@
 
 
 #include "processInput.h"
+
+#define SIZE_OF_HISTORY 20
+
+#include "fileManipulation.h"
+
 char** tokens;
 int forkIt();
 char path[500];
 char directory[500];
 char cwd[1000];
+int commandNum = 0;
+int returncommandIndex(char* command);
+char* history[SIZE_OF_HISTORY];
+char** tempHistory;
 
-
-//list of our command to (hopefully) see if command entered is in the list
+//list of our command to see if command entered is in the list
 char *commands[] = {
         "exit",
         "setpath",
@@ -27,10 +35,13 @@ char *commands[] = {
         "getpath",
         "alias", //if only "alises" is typed, it prints the list of aliases
         "unalias"
+        "getpath",
+        "history",
+        "clearh",
+        NULL
 };
 
 int main() {
-
     //saving the current path to restore it later
     strcpy(path, getenv("PATH"));
     //setting current directory to home
@@ -42,7 +53,19 @@ int main() {
     getcwd(cwd, sizeof(cwd)); // using this to get the current directory(to make sure that it is home)
     printf("The directory is %s \n", cwd);
 
-    printf("Welcome to our Simple Shell!\n");
+    //gets history from a file
+    tempHistory = loadHistory(&commandNum);
+    int counter = 0;
+    for(int i=0; (i<commandNum && i<SIZE_OF_HISTORY); i++) {
+        history[i] = tempHistory[i];
+        counter += 1;
+    }
+    printf("Loading history from file, %d commands, current command %d (%d of %d):\n", counter, commandNum + 1, (commandNum + 1)%SIZE_OF_HISTORY,SIZE_OF_HISTORY);
+    //printHistory(history, commandNum+1);
+
+    printf("\n+------------------------------+\n"
+           "| Welcome to our Simple Shell! |\n"
+           "+------------------------------+\n\n");
 
     char input[512]; //Allocates 512 bytes of null 0. Acts as eof
     printf("$> ");
@@ -84,6 +107,23 @@ int main() {
         }
 
 
+        // Check for invoke from history commands
+        if (checkIfHistory(input)) {
+            tokens = parsingTheLine(input);
+            if (strcspn(tokens[0],"!")==0)
+                tokens = historyShenanigans(parsingTheLine(input), history, commandNum);
+            else {
+                history[commandNum % SIZE_OF_HISTORY] = strdup(input);
+                tokens = parsingTheLine(input);
+                commandNum += 1;
+            }
+        }
+        else{
+            // Save as new history and run
+            history[commandNum % SIZE_OF_HISTORY] = strdup(input);
+            tokens = parsingTheLine(input);
+            commandNum += 1;
+        }
 
         //if the method entered is not in the list of commands, execute else and forkit
         if(returncommandIndex(tokens[0]) > -1) {
@@ -91,16 +131,18 @@ int main() {
             if (strcmp(tokens[0], "exit") == 0 && tokens[1] == NULL)
                 break;
 
-            //get current path
+                //get current path
             else if (strcmp(tokens[0], "getpath") == 0 && tokens[1] == NULL) {
                 getPath();
                 continue;
             }
 
-            //set path to whatever is asked
+                //set path to whatever is asked
             else if (strcmp(tokens[0], "setpath") == 0 && tokens[1] != NULL && tokens[2] == NULL) {
                 setPath(tokens[1]);
             }
+
+                //changing the directory
             else if (strcmp(tokens[0],"cd")== 0){
                 if(tokens[1] == NULL){
                     changeDirectory(directory);
@@ -118,6 +160,18 @@ int main() {
             else if(strcmp(tokens[0], "alias") == 0 && tokens[1] == NULL){
                 print_aliases();
             }
+
+                //prints out history
+            else if(strcmp(tokens[0],"history") == 0){
+                printHistory(history, commandNum);
+            }
+
+            else if (strcmp(tokens[0],"clearh")==0) {
+                commandNum = 0;
+                *history = NULL;
+            }
+
+                //invalid number of arguments for one of our pre-defined functions
             else {
                 printf("Error: Invalid invalid amount of arguments\n");
             }
@@ -126,14 +180,25 @@ int main() {
         else {
             forkIt();
         }
-
         printf("$> ");
     }
+
+    //closing the shell
+    strcpy(directory, getenv("HOME"));
+    chdir(directory);
+
+    int check = saveHistory(history, commandNum);
+    printf("Check if history save is success: %d\n", check);
+
+    //printf("This has been saved:\n");
+    tempHistory = loadHistory(&commandNum);
+    //for(int i=0; (i<commandNum && i<SIZE_OF_HISTORY); i++) {
+    //    printf("%d: %s", i+1, tempHistory[i]); }
+
 
     //set the environment back to the original one
     setenv("PATH", path,1);
     printf("Path is restored to %s \n", path);
-
     return 1;
 }
 
@@ -154,7 +219,7 @@ int forkIt () {
     else {
         pid = wait(&status);        //parent waits for change in status
         if(WIFEXITED(status)){      //separates prompt from error messages
-            printf(" ");
+            printf("");
         }
     }
     return 0;
