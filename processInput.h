@@ -7,7 +7,9 @@
 
 #include <stdlib.h>
 #include <unistd.h>
+
 #define TOKENIZERS " |><&;\t\n"
+#define SIZE_OF_HISTORY 20
 
 
 char** parsingTheLine(char*);
@@ -26,6 +28,9 @@ struct alias{
 }aliases[10];
 
 
+int checkIfHistory(char* input);
+char** historyShenanigans(char**, char* history[20], int);
+void printHistory(char* history[20], int);
 
 /**
  * breaking up the input
@@ -62,15 +67,79 @@ void changeDirectory(char* nDirectory){
  * method prints the current path
  */
 void getPath(){
-        printf("%s\n$>", getenv("PATH"));
-    }
+    printf("%s\n$>", getenv("PATH"));
+}
 
 /**
  * method sets the current path
  */
 void setPath(char* directory){
     setenv("PATH",directory,1);
+}
+
+int checkIfHistory(char* input) {
+    if (strcspn(input, "!") < strlen(input)) {
+        return 1; }
+    else {
+        return 0; }
+}
+
+char** historyShenanigans(char** tokens, char* history[SIZE_OF_HISTORY], int commandNum) {
+    if (strcspn(tokens[0],"!")==0){
+        if (!strncmp(tokens[0],"!!",2)){
+            if (commandNum != 0) {
+                tokens = parsingTheLine(history[(commandNum - 1) % SIZE_OF_HISTORY]); }
+            else {
+                printf("Error: Can't go that far back into history, sorry bud.\n");
+            }
+        }
+        else if (!strncmp(tokens[0],"!-",2)){
+            int number = (atoi(strtok(tokens[0],"!"))); //the number that has been passed in after !, negative
+            if ((commandNum + number) > commandNum - SIZE_OF_HISTORY)
+                tokens = parsingTheLine(history[(commandNum + number) % SIZE_OF_HISTORY]);
+            else if (number == 0)
+                printf("Error: That's some invalid input there, bro.\n");
+            else {
+                printf("Error: Can't go that far back into history, sorry bud.\n");
+            }
+        }
+        else{
+            int number = (atoi(strtok(tokens[0],"!"))); //the number that has been passed in after !
+            if (number < commandNum && number > commandNum - SIZE_OF_HISTORY)
+                tokens = parsingTheLine(history[(number-1) % SIZE_OF_HISTORY]);
+            else if (number ==0)
+                printf("Error: That's some invalid input there, bro.\n");
+            else {
+                printf("Error: Can't go that far back into history, sorry bud.\n");
+            }
+        }
     }
+    return tokens;
+}
+
+void printHistory(char* history[20], int commandNum) {
+    int index = 0;
+    int curCommandNum = commandNum-1;
+    if (curCommandNum<SIZE_OF_HISTORY) {
+        while (index<SIZE_OF_HISTORY && index<(curCommandNum)) {
+            if (history[index][strlen(history[index])-1] =='\n')
+                printf("%d: %s",index+1,history[index]);
+            else
+                printf("%d: %s\n",index+1,history[index]);
+            index=(index+1)%SIZE_OF_HISTORY;
+        }
+    }
+    else {
+        index = (curCommandNum+1)%SIZE_OF_HISTORY;
+        for (int i=1; i<(SIZE_OF_HISTORY+1); i++){
+            if (history[index][strlen(history[index])-1] =='\n')
+                printf("%d: %s",commandNum - SIZE_OF_HISTORY + i,history[index]);
+            else
+                printf("%d: %s\n",commandNum - SIZE_OF_HISTORY + i,history[index]);
+            index=(index+1)%SIZE_OF_HISTORY;
+        }
+    }
+}
 
 int getAliasIndex(char *target){
     if (target != NULL){
