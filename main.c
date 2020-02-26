@@ -15,7 +15,6 @@
 
 #define SIZE_OF_HISTORY 20
 
-#include "fileManipulation.h"
 
 char** tokens;
 int forkIt();
