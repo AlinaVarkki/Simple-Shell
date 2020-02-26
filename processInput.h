@@ -84,7 +84,7 @@ int checkIfHistory(char* input) {
         return 0; }
 }
 
-char** historyShenanigans(char** tokens, char* history[20], int commandNum) {
+char** historyShenanigans(char** tokens, char* history[SIZE_OF_HISTORY], int commandNum) {
     if (strcspn(tokens[0],"!")==0){
         if (!strncmp(tokens[0],"!!",2)){
             if (commandNum != 0) {
@@ -135,7 +135,7 @@ void printHistory(char* history[20], int commandNum) {
             if (history[index][strlen(history[index])-1] =='\n')
                 printf("%d: %s",commandNum - SIZE_OF_HISTORY + i,history[index]);
             else
-                printf("%d: %s\n",i,history[index]);
+                printf("%d: %s\n",commandNum - SIZE_OF_HISTORY + i,history[index]);
             index=(index+1)%SIZE_OF_HISTORY;
         }
     }

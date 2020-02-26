@@ -77,6 +77,7 @@ int main() {
             continue;
         }
 
+        char* input2 = strdup(input);
         tokens = parsingTheLine(input);
         //checking if the first token of the command is alias and if it is, change it to the real command
         if(getAliasIndex(tokens[0]) > -1){
@@ -108,20 +109,20 @@ int main() {
 
 
         // Check for invoke from history commands
-        if (checkIfHistory(input)) {
-            tokens = parsingTheLine(input);
+        if (tokens[0][0] == '!') {
+            //tokens = parsingTheLine(input);
             if (strcspn(tokens[0],"!")==0)
-                tokens = historyShenanigans(parsingTheLine(input), history, commandNum);
+                tokens = historyShenanigans(tokens, history, commandNum);
             else {
-                history[commandNum % SIZE_OF_HISTORY] = strdup(input);
-                tokens = parsingTheLine(input);
+                history[commandNum % SIZE_OF_HISTORY] = strdup(input2);
+                tokens = parsingTheLine(input2);
                 commandNum += 1;
             }
         }
         else{
             // Save as new history and run
-            history[commandNum % SIZE_OF_HISTORY] = strdup(input);
-            tokens = parsingTheLine(input);
+            history[commandNum % SIZE_OF_HISTORY] = strdup(input2);
+            tokens = parsingTheLine(input2);
             commandNum += 1;
         }
 
