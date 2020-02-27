@@ -23,6 +23,7 @@ int returncommandIndex(char* command);
 int alias_counter = 0;
 int getAliasIndex(char *target);
 void unalias(char** );
+void printHistory(char* history[20], int);
 
 struct alias{
     char *name;
@@ -30,9 +31,8 @@ struct alias{
 }aliases[10];
 
 
-int checkIfHistory(char* input);
-char** historyShenanigans(char**, char* history[20], int);
-void printHistory(char* history[20], int);
+
+
 
 /**
  * breaking up the input
@@ -210,8 +210,8 @@ void aliasThis(char** aliasNameAndCommand){
     //printf("Index: %d\n",alIndex);
 
 
-    if(alias_counter >= 10){
-        printf("You already have 10 aliases, no more can be added");
+    if(alias_counter >= 10 && alIndex == -1){
+        printf("You already have 10 aliases, no more can be added\n");
         return;
     }
     //case when the alias doesn't yet exist and is added to the array
@@ -234,12 +234,10 @@ void aliasThis(char** aliasNameAndCommand){
     //case when the alias already exists and is just updated
     else {
         int position = alIndex;
-
+        printf("Overwriting alias on %s\n", aliases[alIndex].name);
         //adding new alias
         int i = 2;
-
-        aliases[position].name = strdup (aliasNameAndCommand[1]);
-        aliases[position].command = strdup(aliasNameAndCommand[i++]);
+        aliases[position].command = strdup("");
         while (aliasNameAndCommand[i] != NULL) {
             strcat(aliases[alIndex].command, aliasNameAndCommand[i]);
             strcat(aliases[alIndex].command, " ");
