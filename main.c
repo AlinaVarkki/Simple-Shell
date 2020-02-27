@@ -14,17 +14,19 @@
 #include "fileManipulation.h"
 
 #define SIZE_OF_HISTORY 20
-#define DEBUG 0
+#define DEBUG 1
 
 
-
-char** tokens;
 int forkIt();
+int returncommandIndex(char* command);
+char** checkForInvocation(char**);
+char* deTokenise(char**);
+char** tokens;
+int recurTemp;
 char path[500];
 char directory[500];
 char cwd[1000];
 int commandNum = 0;
-int returncommandIndex(char* command);
 char* history[SIZE_OF_HISTORY];
 char** tempHistory;
 int historyCheck;
@@ -87,15 +89,22 @@ int main() {
             continue;
         }
 
+        char** initialTokens;
         char *input2 = strdup(input);
 
-        // Check for invoke from history commands
-        //    if (checkIfHistory(input)) {
-        tokens = parsingTheLine(input);
+        initialTokens = parsingTheLine(input);
+        recurTemp = 0;
+        tokens = checkForInvocation(initialTokens);
+        if(checkHistory(initialTokens) == 1) {
+            history[commandNum % SIZE_OF_HISTORY] = input2;
+            commandNum += 1;
+        }
+        if(tokens == NULL){
+            printf("$> ");
+            continue;
+        }
 
-
-
-        historyCheck = 0;
+       /* historyCheck = 0;
         if (strcspn(tokens[0], "!") == 0) {
 
             if (tokens[1] == NULL) {
@@ -143,11 +152,8 @@ int main() {
 
             tokens = finalTokens;
 
-        }
-
-
-
-            // If debugging, print all tokens
+        }*/
+             // If debugging, print all tokens
             if (DEBUG) {
                 int count = 0;
                 printf("Listing tokens: \n");
@@ -262,4 +268,84 @@ int returncommandIndex(char* command){
         i++;
     }
     return -1;
+}
+
+char** checkForInvocation(char** invoTokens){
+    if(recurTemp> 10){
+        printf("Overflow! Cannot run this command.\n");
+        return NULL;
+    }
+    recurTemp++;
+    
+    //Check for aliases
+    if (getAliasIndex(invoTokens[0]) > -1) {
+        int pointer = getAliasIndex(invoTokens[0]);
+        invoTokens[0] = strdup(aliases[pointer].command);
+
+        int countInvoTokens = 1;
+        while (invoTokens[countInvoTokens] != NULL)
+            countInvoTokens++;
+        countInvoTokens--;
+
+        char **newInvoTokens = parsingTheLine(invoTokens[0]);
+
+        int countInvoTokens2 = 0;
+        while (newInvoTokens[countInvoTokens2] != NULL)
+            countInvoTokens2++;
+
+        char **finalInvoTokens = malloc(512);
+
+        for (int i = 0; i < countInvoTokens2; i++)
+            finalInvoTokens[i] = newInvoTokens[i];
+
+        for (int i = countInvoTokens2; i < countInvoTokens + countInvoTokens2; i++)
+            finalInvoTokens[i] = invoTokens[i - countInvoTokens2 + 1];
+
+        invoTokens = finalInvoTokens;
+
+        
+        if (getAliasIndex(invoTokens[0]) > -1 || strcspn(invoTokens[0], "!") == 0){
+            return checkForInvocation(invoTokens);
+        }
+        else{
+            return invoTokens;
+        }
+    }
+    else if (strcspn(invoTokens[0], "!") == 0) {
+        char* invoInput = deTokenise(invoTokens);
+        char** invoTempTokens;
+        historyCheck = -1;
+        if (invoTokens[1] == NULL) {
+            invoTempTokens = historyShenanigans(invoTokens, history, commandNum, &historyCheck);
+            if (historyCheck == 1) {
+                printf("$> ");
+                
+            }
+        } else {
+            printf("Error: Invalid amount of arguments\n");
+            return invoTokens;
+        }
+
+        if (getAliasIndex(invoTempTokens[0]) > -1){
+            return checkForInvocation(invoTokens);
+        }
+        else{
+            return invoTempTokens;
+        }
+    }
+    else{
+        return invoTokens;
+    }
+}
+
+char* deTokenise(char** array){
+    char* holder;
+    int x = 1;
+    holder = strdup(array[0]);
+    while(array[x] != NULL){
+        strcat(holder,array[x]);
+        strcat(holder," ");
+        x++;
+    }
+    return holder;
 }

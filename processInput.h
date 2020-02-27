@@ -83,6 +83,10 @@ int checkHistory(char** tokens) {
     int count = 0;
     int dashCount = 0;
 
+    if(tokens[0][0] != '!'){
+        return 1;
+    }
+
     while(tokens[0][count] != NULL){
         if(tokens[0][count] == '-'){
             dashCount++;
