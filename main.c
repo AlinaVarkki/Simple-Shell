@@ -57,11 +57,13 @@ int main() {
 
     //gets history from a file
     tempHistory = loadHistory(&commandNum);
+    int counter = 0;
     for(int i=0; (i<commandNum && i<SIZE_OF_HISTORY); i++) {
         history[i] = tempHistory[i];
+        counter += 1;
     }
-    printf("Loading history from file, %d of commands, current command %d:\n", commandNum, commandNum%SIZE_OF_HISTORY);
-    printHistory(history, commandNum+1);
+    printf("Loading history from file, %d commands, current command %d (%d of %d):\n", counter, commandNum + 1, (commandNum + 1)%SIZE_OF_HISTORY,SIZE_OF_HISTORY);
+    //printHistory(history, commandNum+1);
 
     printf("\n+------------------------------+\n"
            "| Welcome to our Simple Shell! |\n"
@@ -172,13 +174,16 @@ int main() {
     }
 
     //closing the shell
+    strcpy(directory, getenv("HOME"));
+    chdir(directory);
+
     int check = saveHistory(history, commandNum);
     printf("Check if history save is success: %d\n", check);
 
-    printf("This has been saved:\n");
+    //printf("This has been saved:\n");
     tempHistory = loadHistory(&commandNum);
-    for(int i=0; (i<commandNum && i<SIZE_OF_HISTORY); i++) {
-        printf("%d: %s", i+1, tempHistory[i]); }
+    //for(int i=0; (i<commandNum && i<SIZE_OF_HISTORY); i++) {
+    //    printf("%d: %s", i+1, tempHistory[i]); }
 
 
     //set the environment back to the original one
