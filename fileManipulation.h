@@ -11,13 +11,13 @@ char** loadHistory(int*);
 
 int saveAliases() {
     //opening up file and setting it all up
-    char* fname = "aliases";
+    char* fname = ".aliases";
     FILE *fp;
     fp = fopen(fname, "w");
     if (fp == NULL) {
         return -1; }
 
-    //saving shit
+    //saving
     if (alias_counter == 0) {
         return 0;
     }
@@ -37,7 +37,7 @@ int saveAliases() {
 
 int loadAliases() {
     //opens file for reading
-    char* fname = "aliases";
+    char* fname = ".aliases";
     FILE *fp;
     fp = fopen(fname, "r");
     if (fp == NULL) {
@@ -48,7 +48,12 @@ int loadAliases() {
     char buffer[512];
     while(fgets(buffer, 512, fp) != NULL) {
         temp = parsingTheLine(buffer);
-        aliasThis(temp);
+        if(strcmp(temp[0],"alias") == 0 && temp[1] != NULL && temp[2] != NULL){
+            aliasThis(temp);
+        }
+        else{
+            printf("Malformed alias, skipping\n");
+        }
     }
 
 
@@ -80,11 +85,9 @@ int saveHistory(char* history[SIZE_OF_HISTORY], int pos) {
     while (i<SIZE_OF_HISTORY && i<pos) {
         if (history[i][strlen(history[i])-1]=='\n') {
             fprintf(fp, "%s", history[i]);
-            printf("saving: %s", history[i]);
         }
         else {
             fprintf(fp, "%s\n", history[i]);
-            printf("saving: %s\n", history[i]);
         }
         i++;
     }

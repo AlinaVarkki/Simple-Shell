@@ -13,8 +13,6 @@
 #include "processInput.h"
 #include "fileManipulation.h"
 
-#include "fileManipulation.h"
-
 #define SIZE_OF_HISTORY 20
 #define DEBUG 0
 
@@ -215,12 +213,13 @@ int main() {
         chdir(directory);
 
         if(alias_counter != 0) {
-            int check = saveAliases();
-        printf("Check if alias save is success: %d\n", check);
+            int checkAlias = saveAliases();
+            printf("Check if alias save is success: %d\n", checkAlias);
+        }
 
 
-        int check = saveHistory(history, commandNum);
-        printf("Check if history save is success: %d\n", check);
+        int checkHistory = saveHistory(history, commandNum);
+        printf("Check if history save is success: %d\n", checkHistory);
 
         //set the environment back to the original one
         setenv("PATH", path, 1);
@@ -228,9 +227,6 @@ int main() {
         return 1;
     }
 
-
-
-}
 
     int forkIt() {
         pid_t process_id, pid; //Creates process id
