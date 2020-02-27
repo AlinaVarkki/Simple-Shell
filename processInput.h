@@ -7,23 +7,30 @@
 
 #include <stdlib.h>
 #include <unistd.h>
+#include <ctype.h>
 #define TOKENIZERS " |><&;\t\n"
+#define SIZE_OF_HISTORY 20
 
 
 char** parsingTheLine(char*);
 void setPath(char* directory);
 void getPath();
 void changeDirectory(char*);
+int checkHistory(char**);
+char** historyShenanigans(char**, char* history[20], int, int*);
 void aliasThis(char**);
 int returncommandIndex(char* command);
 int alias_counter = 0;
 int getAliasIndex(char *target);
-void unalias(char**);
+void unalias(char** );
+void printHistory(char* history[20], int);
 
 struct alias{
     char *name;
     char *command;
 }aliases[10];
+
+
 
 
 
@@ -62,15 +69,124 @@ void changeDirectory(char* nDirectory){
  * method prints the current path
  */
 void getPath(){
-        printf("%s\n$>", getenv("PATH"));
-    }
+    printf("%s\n$>", getenv("PATH"));
+}
 
 /**
  * method sets the current path
  */
 void setPath(char* directory){
     setenv("PATH",directory,1);
+}
+
+int checkHistory(char** tokens) {
+    int count = 0;
+    int dashCount = 0;
+
+    while(tokens[0][count] != NULL){
+        if(tokens[0][count] == '-'){
+            dashCount++;
+            if(dashCount > 1 || count != 1){
+                return 1;
+            }
+        }
+        if(count>1 && tokens[0][count] == '!'){
+            return 1;
+        }
+        count++;
     }
+    count = 0;
+
+    if(strtok(tokens[0],"!-") == NULL){
+        if(strcmp(tokens[0],"!!") == 0){
+            return 0;
+        }
+        else
+            return 1;
+    }
+
+    while(strtok(tokens[0],"!-")[count] != NULL){
+        if (!isdigit(strtok(tokens[0],"!-")[count])){
+            return 1;
+        }
+        count++;
+    }
+    return 0;
+}
+
+
+
+char** historyShenanigans(char** tokens, char* history[20], int commandNum, int *historyCheck) {
+    *historyCheck = checkHistory(tokens);
+    if(*historyCheck == 1){
+        printf("Error: Please enter a number!\n");
+        return NULL;
+    }
+    if (strcspn(tokens[0],"!")==0 && strlen(tokens[0]) >1){
+        if (!strncmp(tokens[0],"!!",2)){
+            if (commandNum != 0) {
+                tokens = parsingTheLine(strdup(history[(commandNum - 1) % SIZE_OF_HISTORY])); }
+            else {
+                printf("Error: Can't go that far back into history, sorry bud.\n");
+                *historyCheck =1;
+            }
+        }
+        else if (!strncmp(tokens[0],"!-",2)){
+            int number = (atoi(strtok(tokens[0],"!"))); //the number that has been passed in after !, negative
+            if ((commandNum + 1 + number) > 0 && (number * -1) <= SIZE_OF_HISTORY)
+                tokens = parsingTheLine(strdup(history[(commandNum + number) % SIZE_OF_HISTORY]));
+            else if (number == 0) {
+                printf("Error: That's some invalid input there, bro.\n");
+                *historyCheck =1; }
+            else {
+                printf("Error: Can't go that far back into history, sorry bud.\n");
+                *historyCheck =1;
+            }
+        }
+        else{
+            int number = (atoi(strtok(tokens[0],"!"))); //the number that has been passed in after !
+            if (number <= commandNum && number >= commandNum - SIZE_OF_HISTORY && number >0)
+                tokens = parsingTheLine(strdup(history[(number-1) % SIZE_OF_HISTORY]));
+            else if (number ==0) {
+                printf("Error: That's some invalid input there, bro.\n");
+                *historyCheck =1;
+            }
+            else {
+                printf("Error: Can't go that far back into history, sorry bud.\n");
+                *historyCheck =1;
+            }
+        }
+    }
+    /*else if(strlen(tokens[0])){
+        *historyCheck = 1;
+        printf("Error: Invalid amount of arguments.\n");
+    }*/
+    return tokens;
+}
+
+void printHistory(char* history[20], int commandNum) {
+    int index = 0;
+    int curCommandNum = commandNum-1;
+    if (curCommandNum<SIZE_OF_HISTORY) {
+        while (index<SIZE_OF_HISTORY && index<(curCommandNum+1)) {
+            if (history[index][strlen(history[index])-1] =='\n')
+                printf("%d: %s",index+1,history[index]);
+            else
+                printf("%d: %s\n",index+1,history[index]);
+            index=(index+1)%SIZE_OF_HISTORY;
+        }
+    }
+    else {
+        index = (curCommandNum+1)%SIZE_OF_HISTORY;
+        for (int i=1; i<(SIZE_OF_HISTORY+1); i++){
+            if (history[index][strlen(history[index])-1] =='\n')
+                printf("%d: %s",commandNum - SIZE_OF_HISTORY + i,history[index]);
+            else
+                printf("%d: %s\n",commandNum - SIZE_OF_HISTORY + i,history[index]);
+            index=(index+1)%SIZE_OF_HISTORY;
+        }
+    }
+}
 
 int getAliasIndex(char *target){
     if (target != NULL){
@@ -94,8 +210,8 @@ void aliasThis(char** aliasNameAndCommand){
     //printf("Index: %d\n",alIndex);
 
 
-    if(alias_counter >= 10){
-        printf("You already have 10 aliases, no more can be added");
+    if(alias_counter >= 10 && alIndex == -1){
+        printf("You already have 10 aliases, no more can be added\n");
         return;
     }
     //case when the alias doesn't yet exist and is added to the array
@@ -118,12 +234,10 @@ void aliasThis(char** aliasNameAndCommand){
     //case when the alias already exists and is just updated
     else {
         int position = alIndex;
-
+        printf("Overwriting alias on %s\n", aliases[alIndex].name);
         //adding new alias
         int i = 2;
-
-        aliases[position].name = strdup (aliasNameAndCommand[1]);
-        aliases[position].command = strdup(aliasNameAndCommand[i++]);
+        aliases[position].command = strdup("");
         while (aliasNameAndCommand[i] != NULL) {
             strcat(aliases[alIndex].command, aliasNameAndCommand[i]);
             strcat(aliases[alIndex].command, " ");

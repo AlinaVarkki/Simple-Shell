@@ -76,7 +76,6 @@ int saveHistory(char* history[SIZE_OF_HISTORY], int pos) {
 
     //saving history
     fprintf(fp, "%d\n", pos);
-    printf("saving: %d\n", pos);
     int i = 0;
     while (i<SIZE_OF_HISTORY && i<pos) {
         if (history[i][strlen(history[i])-1]=='\n') {
