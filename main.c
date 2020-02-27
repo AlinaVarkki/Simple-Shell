@@ -181,7 +181,7 @@ int main() {
     printf("Check if history save is success: %d\n", check);
 
     //printf("This has been saved:\n");
-    tempHistory = loadHistory(&commandNum);
+    //tempHistory = loadHistory(&commandNum);
     //for(int i=0; (i<commandNum && i<SIZE_OF_HISTORY); i++) {
     //    printf("%d: %s", i+1, tempHistory[i]); }
 
