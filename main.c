@@ -60,6 +60,7 @@ int main() {
         //Windows contingency
         if(strlen(input) == 1){
             printf("$>");
+            continue;
         }
 
 
