@@ -14,6 +14,7 @@
 #include "processInput.h"
 
 #define SIZE_OF_HISTORY 20
+#define DEBUG 0
 
 #include "fileManipulation.h"
 
@@ -26,6 +27,10 @@ int commandNum = 0;
 int returncommandIndex(char* command);
 char* history[SIZE_OF_HISTORY];
 char** tempHistory;
+int historyCheck;
+
+
+
 
 //list of our command to see if command entered is in the list
 char *commands[] = {
@@ -63,32 +68,59 @@ int main() {
            "+------------------------------+\n\n");
 
     char input[512]; //Allocates 512 bytes of null 0. Acts as eof
-    printf("$>");
+    printf("$> ");
 
     while (fgets(input, 512, stdin) != NULL){
         //Windows contingency
         if(strlen(input) == 1){
-            printf("$>");
+            printf("$> ");
             continue;
         }
 
+        char* input2 = strdup(input);
+
         // Check for invoke from history commands
-        if (checkIfHistory(input)) {
+    //    if (checkIfHistory(input)) {
             tokens = parsingTheLine(input);
-            if (strcspn(tokens[0],"!")==0)
-                tokens = historyShenanigans(parsingTheLine(input), history, commandNum);
+            historyCheck = 0;
+            if (strcspn(tokens[0],"!")==0) {
+
+                if (tokens[1]==NULL) {
+                    tokens = historyShenanigans(parsingTheLine(input), history, commandNum, &historyCheck);
+                    if (historyCheck == 1) {
+                        printf("$> ");
+                        continue;
+                    }
+                }
+                else {
+                    printf("Error: Invalid amount of arguments\n");
+                    printf("$> ");
+                    continue; }
+            }
             else {
-                history[commandNum % SIZE_OF_HISTORY] = strdup(input);
-                tokens = parsingTheLine(input);
+                history[commandNum % SIZE_OF_HISTORY] = strdup(input2);
                 commandNum += 1;
             }
+
+//       }
+//        else{
+//            // Save as new history and run
+//            history[commandNum % SIZE_OF_HISTORY] = strdup(input);
+//            tokens = parsingTheLine(input);
+//            commandNum += 1;
+//        }
+
+
+
+        // If debugging, print all tokens
+        if(DEBUG){
+            int count = 0;
+            while(tokens[count] != NULL){
+                printf("%s\n",tokens[count]);
+                count++;
+            }
         }
-        else{
-            // Save as new history and run
-            history[commandNum % SIZE_OF_HISTORY] = strdup(input);
-            tokens = parsingTheLine(input);
-            commandNum += 1;
-        }
+
 
         //if the method entered is not in the list of commands, execute else and forkit
         if(returncommandIndex(tokens[0]) > -1) {
@@ -116,9 +148,7 @@ int main() {
                     changeDirectory(tokens[1]);
                 }
             }
-
-                //prints out history
-            else if(strcmp(tokens[0],"history") == 0){
+            else if(strcmp(tokens[0],"history") == 0 && tokens[1]==NULL){
                 printHistory(history, commandNum);
             }
 
@@ -129,13 +159,15 @@ int main() {
 
                 //invalid number of arguments for one of our pre-defined functions
             else {
-                printf("Error: Invalid invalid amount of arguments\n");
+                printf("Error: Invalid amount of arguments\n");
             }
 
         }
         else {
-            forkIt();
+            if (historyCheck == 0)
+                forkIt();
         }
+
         printf("$> ");
     }
 
