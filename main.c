@@ -22,7 +22,7 @@ char** checkForInvocation(char**);
 
 char** tokens;
 int recurTemp;
-char path[500];
+char sysPath[500];
 char directory[500];
 char cwd[1000];
 int commandNum = 0;
@@ -47,13 +47,13 @@ char *commands[] = {
 
 int main() {
     //saving the current path to restore it later
-    strcpy(path, getenv("PATH"));
+    strcpy(sysPath, getenv("PATH"));
     //setting current directory to home
     strcpy(directory, getenv("HOME"));
     chdir(directory);
 
     //saying what was the initial directory and what we changed it for
-    printf("Initial path is %s \n", path);
+    printf("Initial path is %s \n", sysPath);
     getcwd(cwd, sizeof(cwd)); // using this to get the current directory(to make sure that it is home)
     printf("The directory is %s \n", cwd);
 
@@ -174,8 +174,8 @@ int main() {
         printf("History save has failed.\n");
 
     //set the environment back to the original one
-    setenv("PATH", path, 1);
-    printf("Path is restored to %s \n", path);
+    setenv("PATH", sysPath, 1);
+    printf("Path is restored to %s \n", sysPath);
     return 1;
 }
 
@@ -262,7 +262,7 @@ char** checkForInvocation(char** invoTokens){
         if (invoTokens[1] == NULL) {
             invoTempTokens = historyShenanigans(invoTokens, history, commandNum, &historyCheck);
             if (historyCheck == 1) {
-                printf("$> ");
+                return NULL;
             }
         } else {
             printf("Error: Invalid amount of arguments\n");

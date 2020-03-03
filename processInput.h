@@ -146,7 +146,7 @@ char** historyShenanigans(char** tokens, char* history[20], int commandNum, int 
         }
         else if (!strncmp(tokens[0],"!-",2)){
             int number = (atoi(strtok(tokens[0],"!"))); //the number that has been passed in after !, negative
-            if ((commandNum + 1 + number) > 0 && (number * -1) <= SIZE_OF_HISTORY)
+            if ((number * -1) <= SIZE_OF_HISTORY)  //(commandNum + 1 + number) > 0 &&
                 tokens = parsingTheLine(strdup(history[(commandNum + number) % SIZE_OF_HISTORY]));
             else if (number == 0) {
                 printf("Error: That's some invalid input there, bro.\n");
@@ -158,12 +158,8 @@ char** historyShenanigans(char** tokens, char* history[20], int commandNum, int 
         }
         else{
             int number = (atoi(strtok(tokens[0],"!"))); //the number that has been passed in after !
-            if (number <= commandNum && number >= commandNum - SIZE_OF_HISTORY && number >0)
+            if (number <= commandNum && number >= commandNum - SIZE_OF_HISTORY && number >0 && number <= SIZE_OF_HISTORY)
                 tokens = parsingTheLine(strdup(history[(number-1) % SIZE_OF_HISTORY]));
-            else if (number ==0) {
-                printf("Error: That's some invalid input there, bro.\n");
-                *historyCheck =1;
-            }
             else {
                 printf("Error: Can't go that far back into history, sorry bud.\n");
                 *historyCheck =1;
@@ -194,9 +190,9 @@ void printHistory(char* history[20], int commandNum) {
         index = (curCommandNum+1)%SIZE_OF_HISTORY;
         for (int i=1; i<(SIZE_OF_HISTORY+1); i++){
             if (history[index][strlen(history[index])-1] =='\n')
-                printf("%d: %s",commandNum - SIZE_OF_HISTORY + i,history[index]);
+                printf("%d: %s", i,history[index]);
             else
-                printf("%d: %s\n",commandNum - SIZE_OF_HISTORY + i,history[index]);
+                printf("%d: %s\n", i,history[index]);
             index=(index+1)%SIZE_OF_HISTORY;
         }
     }
