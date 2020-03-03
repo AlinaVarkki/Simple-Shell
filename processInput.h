@@ -1,13 +1,11 @@
 /**
- * Header file containing functions that deal with processing the input from user, such as:
- *  parsingTheLine - tokenization
- *  trimString - getting rid of trailing zeroes
- *  stringLength - getting the len of the string
+ * Header file containing functions that deal with processing the input from user
  */
 
 #include <stdlib.h>
 #include <unistd.h>
 #include <ctype.h>
+
 #define TOKENIZERS " |><&;\t\n"
 #define SIZE_OF_HISTORY 20
 
@@ -19,11 +17,11 @@ void changeDirectory(char*);
 int checkHistory(char**);
 char** historyShenanigans(char**, char* history[20], int, int*);
 void aliasThis(char**);
-int returncommandIndex(char* command);
-int alias_counter = 0;
 int getAliasIndex(char *target);
 void unalias(char** );
 void printHistory(char* history[20], int);
+
+int alias_counter = 0;
 
 struct alias{
     char *name;
@@ -31,15 +29,11 @@ struct alias{
 }aliases[10];
 
 
-
-
-
 /**
  * breaking up the input
  * @param line to be split up
  * @return nothing so far (maybe write some check to see if was success?); or maybe it should return a pointer to that array?
  */
-
 char** parsingTheLine(char* input) {
 
     char** tokens = malloc(512);
@@ -58,7 +52,10 @@ char** parsingTheLine(char* input) {
 }
 
 
-
+/**
+ * changes the directory
+ * @param nDirectory
+ */
 void changeDirectory(char* nDirectory){
     int test = chdir(nDirectory);
     if (test ==-1)
@@ -69,7 +66,7 @@ void changeDirectory(char* nDirectory){
  * method prints the current path
  */
 void getPath(){
-    printf("%s\n$>", getenv("PATH"));
+    printf("%s\n", getenv("PATH"));
 }
 
 /**
@@ -79,6 +76,11 @@ void setPath(char* directory){
     setenv("PATH",directory,1);
 }
 
+/**
+ * checks if the input is a history invocation
+ * @param tokens
+ * @return 1 if hisotry invocation is well-formed, 0 otherwise
+ */
 int checkHistory(char** tokens) {
     int count = 0;
     int dashCount = 0;
@@ -87,7 +89,7 @@ int checkHistory(char** tokens) {
         return 1;
     }
 
-    while(tokens[0][count] != NULL){
+    while(tokens[0][count] != (char)NULL){
         if(tokens[0][count] == '-'){
             dashCount++;
             if(dashCount > 1 || count != 1){
@@ -109,7 +111,7 @@ int checkHistory(char** tokens) {
             return 1;
     }
 
-    while(strtok(tokens[0],"!-")[count] != NULL){
+    while(strtok(tokens[0],"!-")[count] != (char)NULL){
         if (!isdigit(strtok(tokens[0],"!-")[count])){
             return 1;
         }
@@ -119,7 +121,14 @@ int checkHistory(char** tokens) {
 }
 
 
-
+/**
+ * switches out history invocation for the actual command that's to be executed
+ * @param tokens
+ * @param history
+ * @param commandNum
+ * @param historyCheck
+ * @return tokens with the commands to be executed
+ */
 char** historyShenanigans(char** tokens, char* history[20], int commandNum, int *historyCheck) {
     *historyCheck = checkHistory(tokens);
     if(*historyCheck == 1){
@@ -161,13 +170,14 @@ char** historyShenanigans(char** tokens, char* history[20], int commandNum, int 
             }
         }
     }
-    /*else if(strlen(tokens[0])){
-        *historyCheck = 1;
-        printf("Error: Invalid amount of arguments.\n");
-    }*/
     return tokens;
 }
 
+/**
+ * prints out the history
+ * @param history
+ * @param commandNum
+ */
 void printHistory(char* history[20], int commandNum) {
     int index = 0;
     int curCommandNum = commandNum-1;
@@ -192,6 +202,11 @@ void printHistory(char* history[20], int commandNum) {
     }
 }
 
+/**
+ * gets alias index
+ * @param target
+ * @return
+ */
 int getAliasIndex(char *target){
     if (target != NULL){
         for(int i=0; i < alias_counter; i++){
@@ -205,14 +220,10 @@ int getAliasIndex(char *target){
 
 /**
  * method to set an alias for a command
+ * @param aliasNameAndCommand
  */
 void aliasThis(char** aliasNameAndCommand){
     int alIndex = getAliasIndex(aliasNameAndCommand[1]);
-
-    //line checks what index does the command have
-    //not needed until testinga
-    //printf("Index: %d\n",alIndex);
-
 
     if(alias_counter >= 10 && alIndex == -1){
         printf("You already have 10 aliases, no more can be added\n");
@@ -226,8 +237,7 @@ void aliasThis(char** aliasNameAndCommand){
         int i = 2;
         aliases[position].name = strdup (aliasNameAndCommand[1]);
         aliases[position].command = strdup(aliasNameAndCommand[i++]);
-        while (aliasNameAndCommand[i] != NULL)
-        {
+        while (aliasNameAndCommand[i] != NULL){
             strcat(aliases[position].command," ");
             strcat(aliases[position].command, aliasNameAndCommand[i]);
             i++;
@@ -250,45 +260,42 @@ void aliasThis(char** aliasNameAndCommand){
     }
 }
 
-//remove alias from the list
-void unalias(char** aliasNameAndCommand)
-{
-    int pointer = getAliasIndex(aliasNameAndCommand[1]);
 
+/**
+ * remove alias from the list
+ * @param aliasNameAndCommand
+ */
+void unalias(char** aliasNameAndCommand) {
+    int pointer = getAliasIndex(aliasNameAndCommand[1]);
         //if alias exists pointer will return its' position in the array
 
         //remove alias from array
-        if (pointer >= 0)
-        {
-
-            for (int i = pointer + 1; i < alias_counter; i++)
-            {
+        if (pointer >= 0) {
+            for (int i = pointer + 1; i < alias_counter; i++) {
                 strcpy(aliases[i - 1].name, aliases[i].name);
                 strcpy(aliases[i - 1].command, aliases[i].command);
             }
-
             //decrement alias count
             alias_counter--;
         }
-        else
-        {
+        else {
             printf("Error: Alias %s does not exist.\n", aliasNameAndCommand[1]);
         }
-
 }
 
 
-//print the list of aliases
-void print_aliases()
-{
+/**
+ * prints out the list of aliases
+ */
+void print_aliases() {
     int i = 0;
-    if (alias_counter == 0)
-    {
+    if (alias_counter == 0){
         printf("You don't have any aliases set\n");
     }
-    while (i < alias_counter)
-    {
+    while (i < alias_counter) {
         printf("%d %s : %s\n", (i+1),aliases[i].name, aliases[i].command);
         i++;
     }
 }
+
+

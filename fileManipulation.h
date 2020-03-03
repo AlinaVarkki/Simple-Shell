@@ -1,6 +1,7 @@
-//
-// Created by Slavka Borovska on 20/02/2020.
-//
+/**
+ * Header file that loads/saves history and aliases from files
+ *
+ */
 
 #define SIZE_OF_HISTORY 20
 
@@ -43,7 +44,7 @@ int loadAliases() {
     if (fp == NULL) {
         return 0; }
 
-    //reads shit
+    //reads file
     char** temp;
     char buffer[512];
     while(fgets(buffer, 512, fp) != NULL) {
@@ -55,7 +56,6 @@ int loadAliases() {
             printf("Malformed alias, skipping\n");
         }
     }
-
 
     //finishing up
     int closed = fclose(fp);
@@ -72,13 +72,10 @@ int saveHistory(char* history[SIZE_OF_HISTORY], int pos) {
     if (fp == NULL) {
         return -1; }
 
-    //saving
-
     //check if there is something in history to save
     if (history == NULL) {
         return -1;
     }
-
     //saving history
     fprintf(fp, "%d\n", pos);
     int i = 0;
@@ -107,7 +104,7 @@ char** loadHistory(int* commandNum) {
     if (fp == NULL) {
         return NULL; }
 
-    //reads shit
+    //reads file
     char buffer[512];
     int pos = 0;
     fscanf(fp, "%d\n", &pos);
@@ -117,7 +114,6 @@ char** loadHistory(int* commandNum) {
         char* tempCommand = malloc(512);
         strcpy(tempCommand, buffer);
         tempHistory1[i] = tempCommand;
-        //printf("%d. command loading: %s",i+1, tempHistory1[i]);
         i++;
     }
     //finishing up
