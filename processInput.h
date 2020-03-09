@@ -166,10 +166,11 @@ void printHistory(char* history[20], int commandNum) {
         index = (curCommandNum+1)%SIZE_OF_HISTORY;
         for (int i=1; i<(SIZE_OF_HISTORY+1); i++){
             if (history[index][strlen(history[index])-1] =='\n')
-                printf("%d: %s",commandNum - SIZE_OF_HISTORY + i,history[index]);
+                printf("%d: %s", i,history[index]);
             else
-                printf("%d: %s\n",commandNum - SIZE_OF_HISTORY + i,history[index]);
+                printf("%d: %s\n", i,history[index]);
             index=(index+1)%SIZE_OF_HISTORY;
+
         }
     }
 }
