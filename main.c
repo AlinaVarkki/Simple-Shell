@@ -14,6 +14,7 @@
 #include "processInput.h"
 
 #define SIZE_OF_HISTORY 20
+#define DEBUG 0
 
 //int const SIZE_OF_HISTORY = 20;
 
@@ -73,17 +74,21 @@ int main() {
             tokens = parsingTheLine(input);
             historyCheck = 0;
             if (strcspn(tokens[0],"!")==0) {
-                if (tokens[1]==NULL)
+
+                if (tokens[1]==NULL) {
                     tokens = historyShenanigans(parsingTheLine(input), history, commandNum, &historyCheck);
+                    if (historyCheck == 1) {
+                        printf("$> ");
+                        continue;
+                    }
+                }
                 else {
                     printf("Error: Invalid amount of arguments\n");
                     printf("$> ");
                     continue; }
             }
-
             else {
                 history[commandNum % SIZE_OF_HISTORY] = strdup(input2);
-                //tokens = parsingTheLine(input);
                 commandNum += 1;
             }
 
@@ -94,6 +99,18 @@ int main() {
 //            tokens = parsingTheLine(input);
 //            commandNum += 1;
 //        }
+
+
+
+        // If debugging, print all tokens
+        if(DEBUG){
+            int count = 0;
+            while(tokens[count] != NULL){
+                printf("%s\n",tokens[count]);
+                count++;
+            }
+        }
+
 
         //if the method entered is not in the list of commands, execute else and forkit
         if(returncommandIndex(tokens[0]) > -1) {
