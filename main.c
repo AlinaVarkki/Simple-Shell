@@ -193,7 +193,8 @@ int main() {
             }
         }
         else{
-            forkIt();
+            if (historyCheck == 1) {
+                forkIt(); }
         }
         printf("$> ");
     }
