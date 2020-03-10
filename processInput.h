@@ -183,7 +183,7 @@ void printHistory(char* history[20], int commandNum) {
                 printf("%d: %s",index+1,history[index]);
             else
                 printf("%d: %s\n",index+1,history[index]);
-            index=(index+1)%SIZE_OF_HISTORY;
+            index=(index+1);
         }
     }
     else {
