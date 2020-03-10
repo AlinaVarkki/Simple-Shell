@@ -156,10 +156,16 @@ char** historyShenanigans(char** tokens, char* history[20], int commandNum, int 
                 *historyCheck =1;
             }
         }
-        else{
-            int number = (atoi(strtok(tokens[0],"!"))); //the number that has been passed in after !
-            if (number <= commandNum && number >= commandNum - SIZE_OF_HISTORY && number >0 && number <= SIZE_OF_HISTORY)
-                tokens = parsingTheLine(strdup(history[(number-1) % SIZE_OF_HISTORY]));
+        else {
+            int number = (atoi(strtok(tokens[0], "!"))); //the number that has been passed in after !
+            if (number > 0 && number <= SIZE_OF_HISTORY){
+                if (commandNum <= SIZE_OF_HISTORY) {
+                    tokens = parsingTheLine(strdup(history[(number) - 1]));
+                }
+                else {
+                    tokens = parsingTheLine(strdup(history[(commandNum - (SIZE_OF_HISTORY - number)) % SIZE_OF_HISTORY - 1]));
+                }
+            }
             else {
                 printf("Error: Can't go that far back into history, sorry bud.\n");
                 *historyCheck =1;

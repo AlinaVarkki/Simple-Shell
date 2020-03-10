@@ -113,37 +113,78 @@ int main() {
         //if the method entered is not in the list of commands, execute else and forkit
         if (returncommandIndex(tokens[0]) > -1) {
             // if first token is "exit" then
-            if (strcmp(tokens[0], "exit") == 0 && tokens[1] == NULL)
-                break;
+            if (strcmp(tokens[0], "exit") == 0)
+                if(tokens[1] == NULL) {
+                    break;
+                }
+                else{
+                    printf("The exit command does not accept any arguments\n");
+                }
 
                 //get current path
-            else if (strcmp(tokens[0], "getpath") == 0 && tokens[1] == NULL) {
-                getPath();
+            else if (strcmp(tokens[0], "getpath") == 0){
+                if(tokens[1] == NULL){
+                    getPath();
+                }
+                else{
+                    printf("The getpath command does not accept any arguments\n");
+                }
             }
 
                 //set path to whatever is asked
-            else if (strcmp(tokens[0], "setpath") == 0 && tokens[1] != NULL && tokens[2] == NULL) {
-                setPath(tokens[1]);
+            else if (strcmp(tokens[0], "setpath") == 0) {
+                if(tokens[1] != NULL && tokens[2] == NULL){
+                    setPath(tokens[1]);
+                }
+                else{
+                    printf("The setpath command takes 1 and only 1 argument : the path to be set\n");
+                }
             }
 
                 //changing the directory
             else if (strcmp(tokens[0], "cd") == 0) {
                 if (tokens[1] == NULL) {
                     changeDirectory(directory);
-                } else {
+                }
+                else if(tokens[1] != NULL && tokens[2] == NULL) {
                     changeDirectory(tokens[1]);
                 }
-            } else if (strcmp(tokens[0], "alias") == 0 && tokens[1] != NULL && tokens[2] != NULL) {
-                aliasThis(tokens);
-            } else if (strcmp(tokens[0], "unalias") == 0 && tokens[1] != NULL && tokens[2] == NULL) {
-                unalias(tokens);
-            } else if (strcmp(tokens[0], "alias") == 0 && tokens[1] == NULL) {
-                print_aliases();
-            } else if (strcmp(tokens[0], "history") == 0) {
-                printHistory(history, commandNum);
+                else{
+                    printf("The cd command takes at most 1 argument : the directory to go to\n");
+                }
+            } else if (strcmp(tokens[0], "alias") == 0) {
+                if(tokens[1] != NULL && tokens[2] != NULL && tokens[3] == NULL) {
+                    aliasThis(tokens);
+                }
+                else if (tokens[1] == NULL) {
+                    print_aliases();
+                }
+                else{
+                    printf("The alias command accepts either 2 arguments to define an alias : The alias , the command attached to the alias\n");
+                    printf("Or it takes no arguments to print currently defined aliases\n");
+                }
+            } else if (strcmp(tokens[0], "unalias") == 0 ) {
+                if(tokens[1] != NULL && tokens[2] == NULL) {
+                    unalias(tokens);
+                }
+                else{
+                    printf("The unalias command takes only 1 argument : The alias to be deleted\n");
+                }
+            }  else if (strcmp(tokens[0], "history") == 0) {
+                if(tokens[1] == NULL) {
+                    printHistory(history, commandNum);
+                }
+                else{
+                    printf("The history command takes no arguments\n");
+                }
             } else if (strcmp(tokens[0], "clearh") == 0) {
-                commandNum = 0;
-                *history = NULL;
+                if(tokens[1] == NULL) {
+                    commandNum = 0;
+                    *history = NULL;
+                }
+                else{
+                    printf("The clearh command takes no arguments\n");
+                }
             }
 
                 //invalid number of arguments for one of our pre-defined functions
@@ -265,7 +306,7 @@ char** checkForInvocation(char** invoTokens){
                 return NULL;
             }
         } else {
-            printf("Error: Invalid amount of arguments\n");
+            printf("History invocations do not take any arguments\n");
             return invoTokens;
         }
 
