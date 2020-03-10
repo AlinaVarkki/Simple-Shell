@@ -163,7 +163,7 @@ char** historyShenanigans(char** tokens, char* history[20], int commandNum, int 
                     tokens = parsingTheLine(strdup(history[(number) - 1]));
                 }
                 else {
-                    tokens = parsingTheLine(strdup(history[(commandNum - (SIZE_OF_HISTORY - number)) % SIZE_OF_HISTORY - 1]));
+                    tokens = parsingTheLine(strdup(history[(commandNum - (SIZE_OF_HISTORY - number + 1)) % SIZE_OF_HISTORY]));
                 }
             }
             else {

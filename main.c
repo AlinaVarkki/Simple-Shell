@@ -307,7 +307,7 @@ char** checkForInvocation(char** invoTokens){
             }
         } else {
             printf("History invocations do not take any arguments\n");
-            return invoTokens;
+            return NULL;
         }
 
         if (getAliasIndex(invoTempTokens[0]) > -1){
