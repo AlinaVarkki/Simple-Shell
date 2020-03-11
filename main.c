@@ -153,14 +153,14 @@ int main() {
                     printf("The cd command takes at most 1 argument : the directory to go to\n");
                 }
             } else if (strcmp(tokens[0], "alias") == 0) {
-                if(tokens[1] != NULL && tokens[2] != NULL && tokens[3] == NULL) {
+                if(tokens[1] != NULL && tokens[2] != NULL) {
                     aliasThis(tokens);
                 }
                 else if (tokens[1] == NULL) {
                     print_aliases();
                 }
                 else{
-                    printf("The alias command accepts either 2 arguments to define an alias : The alias , the command attached to the alias\n");
+                    printf("The alias command accepts either 2 (or more) arguments to define an alias : The alias, the command attached to the alias\n");
                     printf("Or it takes no arguments to print currently defined aliases\n");
                 }
             } else if (strcmp(tokens[0], "unalias") == 0 ) {
@@ -193,8 +193,7 @@ int main() {
             }
         }
         else{
-            if (historyCheck == 1) {
-                forkIt(); }
+                forkIt();
         }
         printf("$> ");
     }
@@ -312,7 +311,7 @@ char** checkForInvocation(char** invoTokens){
         }
 
         if (getAliasIndex(invoTempTokens[0]) > -1){
-            return checkForInvocation(invoTokens);
+            return checkForInvocation(invoTempTokens);
         }
         else{
             return invoTempTokens;
